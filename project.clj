@@ -5,4 +5,8 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [compojure "1.1.8"]
-                 [http-kit "2.1.16"]])
+                 [http-kit "2.1.16"]
+
+                 ;; breaks clojure deps
+                 ;[org.clojars.maoe/rrd4clj "0.0.0-SNAPSHOT"]
+])
