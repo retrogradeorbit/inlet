@@ -1,6 +1,17 @@
-(ns inlet.core)
+(ns inlet.core
+  (:require [compojure.core :refer :all]
+            [org.httpkit.server :refer [run-server]])
+)
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn data [req]
+  (println req)
+  "OK"
+  )
+
+(defroutes myapp
+  (GET "/" [] "Hello World")
+  (POST "/data" req (data req) )
+  )
+
+(defn -main []
+  (run-server myapp {:port 5000}))
