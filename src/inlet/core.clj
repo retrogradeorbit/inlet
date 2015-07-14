@@ -11,6 +11,13 @@
            [org.rrd4j.ConsolFun]
            [org.rrd4j.DsType]))
 
+(def AVERAGE org.rrd4j.ConsolFun/AVERAGE)
+(def MAX org.rrd4j.ConsolFun/MAX)
+
+(def GAUGE org.rrd4j.DsType/GAUGE)
+(def COUNTER org.rrd4j.DsType/COUNTER)
+(def DERIVE org.rrd4j.DsType/DERIVE)
+(def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
 (defn data [req]
   (pprint req)
   "OK"
