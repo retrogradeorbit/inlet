@@ -2,11 +2,7 @@
   (:require [compojure.core :refer :all]
             [clojure.pprint :refer [pprint]]
             [org.httpkit.server :refer [run-server]]
-            [ring.middleware.params :refer [wrap-params]]
-            ;; [rrd4clj.io :as io]
-            ;; [rrd4clj.core :as rrd]
-            ;; [rrd4clj.graph :as g]
-            )
+            [ring.middleware.params :refer [wrap-params]])
   (:import [org.rrd4j.core RrdDef RrdDb Sample]
            [org.rrd4j.ConsolFun]
            [org.rrd4j.DsType]))
