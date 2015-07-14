@@ -6,7 +6,10 @@
             ;; [rrd4clj.io :as io]
             ;; [rrd4clj.core :as rrd]
             ;; [rrd4clj.graph :as g]
-            ))
+            )
+  (:import [org.rrd4j.core RrdDef RrdDb Sample]
+           [org.rrd4j.ConsolFun]
+           [org.rrd4j.DsType]))
 
 (defn data [req]
   (pprint req)
