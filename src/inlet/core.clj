@@ -2,25 +2,30 @@
   (:require [compojure.core :refer :all]
             [clojure.pprint :refer [pprint]]
             [org.httpkit.server :refer [run-server]]
-            [rrd4clj.io :as io]
-            [rrd4clj.core :as rrd]
-            [rrd4clj.graph :as g]))
+            [ring.middleware.params :refer [wrap-params]]
+            ;; [rrd4clj.io :as io]
+            ;; [rrd4clj.core :as rrd]
+            ;; [rrd4clj.graph :as g]
+            ))
 
 (defn data [req]
   (pprint req)
   "OK"
   )
 
-(defroutes myapp
+(defroutes app-routes
   (GET "/" [] "Hello World")
   (POST "/data" req (data req) )
   )
 
+(def app (-> app-routes
+             wrap-params))
+
 (defn -main []
-  (run-server myapp {:port 5000}))
+  (run-server app {:port 5000}))
 
 
-(defn test []
+#_ (defn test []
   (rrd/rrd "/tmp/rrd.rrd"
            :start-time 0
            :step 300
