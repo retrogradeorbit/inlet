@@ -18,6 +18,33 @@
 (def COUNTER org.rrd4j.DsType/COUNTER)
 (def DERIVE org.rrd4j.DsType/DERIVE)
 (def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
+
+(comment
+  (def rrd (RrdDef. "/tmp/test.rrd" 300))
+  (doto rrd
+
+    ;; name, type, heartbeat, min, max
+    (.addDatasource "probe-1-temp" GAUGE 600 55 95)
+
+    ;; Consolidation Func, XFilesFactor Steps Rows
+    (.addArchive AVERAGE 0.5 1 600)
+    (.addArchive AVERAGE 0.5 6 700)
+    (.addArchive MAX 0.5 1 600))
+
+  (def rdb (RrdDb. rrd))
+
+  (def sample (.createSample rdb))
+  (.setTime sample 0)
+
+  ;; some reason this next one gives:
+  ;; No matching method found: setValue for class org.rrd4j.core.Sample
+  ;; IllegalArgumentException No matching method found: setValue for class org.rrd4j.core.Sample  clojure.lang.Reflector.invokeMatchingMethod (Reflector.java:80)
+  (.setValue sample "probe-1-temp" 60)
+
+
+)
+
+
 (defn data [req]
   (pprint req)
   "OK"
