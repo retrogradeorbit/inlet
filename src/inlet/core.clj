@@ -31,12 +31,7 @@
 
   (def sample (.createSample rdb))
   (.setTime sample 0)
-
-  ;; some reason this next one gives:
-  ;; No matching method found: setValue for class org.rrd4j.core.Sample
-  ;; IllegalArgumentException No matching method found: setValue for class org.rrd4j.core.Sample  clojure.lang.Reflector.invokeMatchingMethod (Reflector.java:80)
-  (.setValue sample "probe-1-temp" 60)
-
+  (.setValue sample "probe-1-temp" (double 60))
 
 )
 
