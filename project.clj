@@ -10,6 +10,5 @@
                  ;; use rrd4j directly
                  [org.rrd4j/rrd4j "2.2.1"]
 
-                 ;; breaks clojure deps
-                 ;[org.clojars.maoe/rrd4clj "0.0.0-SNAPSHOT"]
-])
+                 ;; encodings
+                 [org.clojure/data.json "0.2.6"]])
