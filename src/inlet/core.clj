@@ -4,8 +4,10 @@
             [org.httpkit.server :refer [run-server]]
             [ring.middleware.params :refer [wrap-params]])
   (:import [org.rrd4j.core RrdDef RrdDb Sample]
+           [org.rrd4j.graph  RrdGraph RrdGraphDef]
            [org.rrd4j.ConsolFun]
-           [org.rrd4j.DsType]))
+           [org.rrd4j.DsType]
+           [java.awt Color]))
 
 (def AVERAGE org.rrd4j.ConsolFun/AVERAGE)
 (def MAX org.rrd4j.ConsolFun/MAX)
@@ -40,6 +42,21 @@
 ;; writes the file
 (.close rdb)
 
+
+;; make a graph
+(def rrdgdef (RrdGraphDef.))
+(doto rrdgdef
+  (.setWidth 800)
+  (.setHeight 300)
+  (.setFilename "/tmp/test.png")
+  (.setStartTime 0)
+  (.setEndTime 1437105502)
+  (.setTitle "My Title")
+  (.setVerticalLabel "bytes")
+  (.datasource "bytes" "/tmp/test.rrd" "probe-1-temp" AVERAGE)
+  (.hrule 2568 Color/GREEN "hrule")
+  (.setImageFormat "png"))
+(def graph  (RrdGraph. rrdgdef))
 
 
 
