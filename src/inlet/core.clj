@@ -95,15 +95,17 @@
       (.setEndTime latest)
       (.setTitle "My Title")
       (.setVerticalLabel "bytes")
-      (.setAltAutoscale false)
+      ;(.setAltAutoscale false)
       ;(.setAltAutoscaleMin true)
       ;(.setAltAutoscaleMax true)
-      (.setMinValue 1)
-      (.setMaxValue 0)
+      ;(.setMinValue 1)
+      ;(.setMaxValue 0)
 
-      (.datasource "bytes" file "INPUT" AVERAGE)
-      (.area "bytes" Color/BLUE)
-      (.hrule 0.6  Color/GREEN "hrule")
+      (.datasource "input" file "INPUT" AVERAGE)
+      (.area "input" Color/BLUE)
+      (.datasource "output" file "OUTPUT" AVERAGE)
+      (.area "output" Color/GREEN)
+      ;(.hrule 0.6  Color/GREEN "hrule")
       (.setImageFormat "png"))
     (RrdGraph. rrdgdef)))
 
@@ -130,21 +132,22 @@
 
     (let [rrd (if (.exists file)
                 (RrdDb. (str file))
-                (make-new-rrd file earliest first-data))]
+                (make-new-rrd file (dec earliest) first-data))]
       (doall
        (for [t timestamps]
          (let [sample (.createSample rrd)]
            (.setTime sample  t)
-           ;(.setValue sample "INPUT" (double ((data t) "INPUT")) )
-           ;(.setValue sample "OUTPUT" (double ((data t) "OUTPUT")) )
-           (.setValue sample "INPUT" (double (rand)) )
-           (.setValue sample "OUTPUT" (double (rand)) )
-           ;(println "done" t "," (double ((data t) "INPUT")))
-           ))
+           (.setValue sample "INPUT" (double ((data t) "INPUT")) )
+           (.setValue sample "OUTPUT" (double ((data t) "OUTPUT")) )
+           (try
+             (.update sample)
+             (catch java.lang.IllegalArgumentException _))))
        )
       (.close rrd)
       (println rrd "," host ":" earliest "->" latest "." step)
       (make-graph (str file) earliest latest)
+
+
       "OK")))
 
 (defroutes app-routes
