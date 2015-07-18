@@ -168,7 +168,17 @@
   (future-cancel grapher)
   )
 
+(defn now [] (/ (.getTime (new java.util.Date)) 1000))
+;(future-cancel grapher)
 
+(def grapher (future
+               (loop []
+                 (Thread/sleep 1000)
+                 ;(println "graph")
+                 (make-graph "/tmp/rrd/knives.rrd" "/tmp/knives-1.png" (- (now) 3000) (now))
+                 (make-graph "/tmp/rrd/knives.rrd" "/tmp/knives-2.png"
+                             (- (now) 1000) (now))
+                 (recur))))
 
 
 (defroutes app-routes
