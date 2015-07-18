@@ -147,13 +147,59 @@
           [(/ (read-string k) 1000) v])
         ))
 
-(defn data [{:keys [params] :as req}]
+(defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
                  params
                  json/read-str
                  proc-data)
         timestamps (sort (keys data))
+        keyset (reduce
+                (fn [acc x]
+                  (apply conj acc x))
+                #{}
+                (map (comp keys second) data))
+        separated (into
+                   {}
+                   (for [k keyset]
+                     [k (into
+                         {}
+                         (filter #(second %)
+                                 (for [t timestamps]
+                                   [t ((data t) k)])))]))
+
+        counts (into {} (for [[k v] separated] [k (count v)] ))
+        {long-set true
+         short-set false} (group-by #(> (second %) 2000) counts)
+        ;sorted-keys (for [[k v] separated] [k (sort (keys v))])
+
+        first-two (into {} (for [[k v] separated] [k (- (apply - (take 2 (sort (keys v)))))]))
+
+        long-set (into {} long-set)
+        short-set (into {} short-set)
+        filename (for [s (keys long-set)]
+                   {:filename (str "/tmp/rrd/" host "/" s ":" (first-two s) ".rrd" )
+                    :name s
+                    :step (first-two s)
+                    :data (separated s)})
+
+        ]
+    (println "---------")
+    (println filename)
+    (println short-set "<<<" long-set)
+    (pprint first-two)))
+
+
+(defn data [{:keys [params] :as req}]
+  ;(println "data" req)
+  (let [host (params "host")
+        data (-> "data"
+                 params
+                 json/read-str
+                 proc-data)
+        timestamps (sort (keys data))
+
+
         earliest (first timestamps)
         first-data (data earliest)
         nearliest (second timestamps)
