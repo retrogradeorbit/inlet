@@ -21,15 +21,14 @@
 
 (def step 1)
 
-(defn filename [host]
-  (str "/tmp/rrd/" host ".rrd"))
+(defn filename [host key step]
+  (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
 
-(defn make-new-rrd [file earliest first-data]
-  (let [d (RrdDef. (str file) earliest 1)
-        step 1]
+(defn make-new-rrd [file earliest labels step]
+  (let [d (RrdDef. (str file) earliest step)]
     (println "!!!" (.dump d))
     (doall
-     (for [n (keys (first-data "iptables"))]
+     (for [n labels]
        (do
          (println "name:" n)
          (.addDatasource d n COUNTER 600 0 200000000))))
@@ -102,6 +101,11 @@
           [(/ (read-string k) 1000) v])
         ))
 
+(defn new-and-open [filename labels step earliest]
+  (if (.exists filename)
+    (RrdDb. (str filename))
+    (make-new-rrd filename (dec earliest) labels step)))
+
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
@@ -125,22 +129,28 @@
 
         counts (into {} (for [[k v] separated] [k (count v)] ))
         {long-set true
-         short-set false} (group-by #(> (second %) 2000) counts)
-        ;sorted-keys (for [[k v] separated] [k (sort (keys v))])
+         short-set false} (group-by #(> (second %) 1150) counts)
+        sorted-keys (into {} (for [[k v] separated] [k (sort (keys v))]))
 
         first-two (into {} (for [[k v] separated] [k (- (apply - (take 2 (sort (keys v)))))]))
 
         long-set (into {} long-set)
         short-set (into {} short-set)
-        filename (for [s (keys long-set)]
-                   {:filename (str "/tmp/rrd/" host "/" s ":" (first-two s) ".rrd" )
+        filenames (for [s (keys long-set)]
+                   {:filename (filename host s (first-two s))
                     :name s
                     :step (first-two s)
                     :data (separated s)})
 
         ]
+    (println
+     (for [k (keys long-set)]
+       (new-and-open (io/file (filename host k (first-two k)))
+                     (keys (second (first (sort (separated k))))) step
+                     (first (sorted-keys k)))))
+
     (println "---------")
-    (println filename)
+    (println filenames)
     (println short-set "<<<" long-set)
     (pprint first-two)))
 
@@ -160,9 +170,8 @@
         nearliest (second timestamps)
         latest (last timestamps)
         step (- nearliest earliest)
-        file (io/file (filename host))
+        file (io/file (filename host "iptables" step))
         ]
-
     (let [rrd (if (.exists file)
                 (RrdDb. (str file))
                 (make-new-rrd file (dec earliest) first-data))]
