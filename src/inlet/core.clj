@@ -89,13 +89,15 @@
 (defn make-graph [file earliest latest]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
-      (.setWidth 800)
+      (.setWidth 900)
       (.setHeight 300)
       (.setFilename "/tmp/test.png")
       (.setStartTime earliest)
       (.setEndTime latest)
       (.setTitle "My Title")
       (.setVerticalLabel "bytes")
+
+      (.setNoMinorGrid true)
       ;(.setAltAutoscale false)
       ;(.setAltAutoscaleMin true)
       ;(.setAltAutoscaleMax true)
@@ -146,8 +148,9 @@
        )
       (.close rrd)
       (println rrd "," host ":" earliest "->" latest "." step)
-      (make-graph (str file) (- latest 2000 ;00
-) latest)
+
+      ;; (make-graph (str file) (- latest 2000 ;00
+      ;;                           ) latest)
 
 
       "OK")))
