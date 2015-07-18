@@ -74,7 +74,7 @@
         step 1]
     (println "!!!" (.dump d))
     (doall
-     (for [n (keys first-data)]
+     (for [n (keys (first-data "iptables"))]
        (do
          (println "name:" n)
          (.addDatasource d n COUNTER 600 0 200000000))))
@@ -140,8 +140,8 @@
        (for [t timestamps]
          (let [sample (.createSample rrd)]
            (.setTime sample  t)
-           (.setValue sample "INPUT" (double ((data t) "INPUT")) )
-           (.setValue sample "OUTPUT" (double ((data t) "OUTPUT")) )
+           (.setValue sample "INPUT" (double (get-in data [t "iptables" "INPUT"])) )
+           (.setValue sample "OUTPUT" (double (get-in data [t "iptables" "OUTPUT"])) )
            (try
              (.update sample)
              (catch java.lang.IllegalArgumentException _))))
