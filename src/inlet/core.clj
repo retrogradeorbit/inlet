@@ -72,6 +72,7 @@
 (defn make-new-rrd [file earliest first-data]
   (let [d (RrdDef. (str file) earliest 1)
         step 1]
+    (println "!!!" (.dump d))
     (doall
      (for [n (keys first-data)]
        (do
@@ -145,10 +146,21 @@
        )
       (.close rrd)
       (println rrd "," host ":" earliest "->" latest "." step)
-      (make-graph (str file) earliest latest)
+      (make-graph (str file) (- latest 2000 ;00
+) latest)
 
 
       "OK")))
+
+
+(comment
+  (defn now [] (/ (.getTime (new java.util.Date)) 1000))
+  (def now )
+  (make-graph "/tmp/rrd/knives.rrd" (- (now) 600) (now))
+)
+
+
+
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
