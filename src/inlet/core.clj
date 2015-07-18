@@ -159,8 +159,14 @@
 (comment
   (defn now [] (/ (.getTime (new java.util.Date)) 1000))
   (def now )
-  (make-graph "/tmp/rrd/knives.rrd" (- (now) 600) (now))
-)
+  (def grapher (future
+                 (loop []
+                   (Thread/sleep 1000)
+                   (make-graph "/tmp/rrd/knives.rrd" (- (now) 500) (now))
+                   (recur))))
+
+  (future-cancel grapher)
+  )
 
 
 
