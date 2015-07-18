@@ -6,7 +6,7 @@
             [clojure.data.json :as json]
             [clojure.java.io :as io])
   (:import [org.rrd4j.core RrdDef RrdDb Sample]
-           [org.rrd4j.graph  RrdGraph RrdGraphDef]
+           [org.rrd4j.graph  RrdGraph RrdGraphDef RrdGraphConstants]
            [org.rrd4j.ConsolFun]
            [org.rrd4j.DsType]
            [java.awt Color]))
@@ -51,7 +51,7 @@
   (def rrdgdef (RrdGraphDef.))
   (doto rrdgdef
     (.setWidth 800)
-    (.setHeight 300)
+    (.setHeight 150)
     (.setFilename "/tmp/test.png")
     (.setStartTime 0)
     (.setEndTime 1437105502)
@@ -86,28 +86,57 @@
       (.addArchive MAX 0.5 1 600))
     (RrdDb. d)))
 
-(defn make-graph [file earliest latest]
+(defn make-graph [file imagefile earliest latest]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
       (.setWidth 900)
-      (.setHeight 300)
-      (.setFilename "/tmp/test.png")
+      (.setHeight 200)
+      (.setFilename imagefile)
       (.setStartTime earliest)
       (.setEndTime latest)
-      (.setTitle "My Title")
+      (.setTitle "Firewall Traffic")
       (.setVerticalLabel "bytes")
 
+      ;; hide bevel
+      (.setColor RrdGraphConstants/COLOR_SHADEA Color/WHITE)
+      (.setColor RrdGraphConstants/COLOR_SHADEB Color/WHITE)
+
+      ;; background frame
+      (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
+
+      ;; graph background
+      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf0 0xf0 0xf8))
+
+      ;; major grid
+      (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
+
+      ;; frame border and minor grid
+      (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
+
+      ;; minor grid
       (.setNoMinorGrid true)
-      ;(.setAltAutoscale false)
-      ;(.setAltAutoscaleMin true)
-      ;(.setAltAutoscaleMax true)
-      ;(.setMinValue 1)
-      ;(.setMaxValue 0)
+
+      (.setAntiAliasing true)
+
+      (.setShowSignature false)
+
+      (.setNoLegend false)
+
+
+
+      ;; (.setAltAutoscale true)
+      ;; (.setAltAutoscaleMin false)
+      ;; (.setAltAutoscaleMax false)
+
+      ;(.setMinValue 0)
+      ;(.setMaxValue 1000000)
 
       (.datasource "input" file "INPUT" AVERAGE)
-      (.area "input" Color/BLUE)
+      ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
+      (.area "input" (Color. 0x60 0x60 0xd0 ) "Firewall Input Chain")
       (.datasource "output" file "OUTPUT" AVERAGE)
-      (.area "output" Color/GREEN)
+      ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
+      (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
       ;(.hrule 0.6  Color/GREEN "hrule")
       (.setImageFormat "png"))
     (RrdGraph. rrdgdef)))
