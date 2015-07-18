@@ -105,7 +105,7 @@
       (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
 
       ;; graph background
-      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf0 0xf0 0xf8))
+      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf8 0xf8 0xff))
 
       ;; major grid
       (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
@@ -133,7 +133,7 @@
 
       (.datasource "input" file "INPUT" AVERAGE)
       ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
-      (.area "input" (Color. 0x60 0x60 0xd0 ) "Firewall Input Chain")
+      (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
       (.datasource "output" file "OUTPUT" AVERAGE)
       ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
       (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
