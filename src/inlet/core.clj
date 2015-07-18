@@ -77,7 +77,7 @@
      (for [n (keys first-data)]
        (do
          (println "name:" n)
-         (.addDatasource d n COUNTER 600 Double/NaN Double/NaN))))
+         (.addDatasource d n COUNTER 600 0 200000000))))
     (doto d
       (.addArchive AVERAGE 0.5 1 (/ (* 24 60 60) step)) ;; one day @ 1 sec
       (.addArchive AVERAGE 0.5 60 (/ (* 24 60 7) step)) ;; 7 days @ 1 min
