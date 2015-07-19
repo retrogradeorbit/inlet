@@ -120,6 +120,25 @@
      (apply conj acc x))
    #{}
    (map (comp keys second) data)))
+
+(defn separate-by-labels
+  "Take the data, and a series of labels,
+  and extract all the data in any timestamp
+  by that label. Then key all that data inside
+  the label by timestamp. ie output is
+
+  (-> separated :iptables 3456734)
+  ;; -> the data for timestamp 3456734 label :iptables"
+  [data labels]
+  (into
+   {}
+   (for [label labels]
+     [label (into
+             {}
+             (filter second
+                     (for [t (keys data)]
+                       [t ((data t) label)])))])))
+
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
@@ -127,15 +146,8 @@
                  json/read-str
                  proc-data)
         timestamps (sort (keys data))
-        separated (into
-                   {}
-                   (for [k keyset]
-                     [k (into
-                         {}
-                         (filter #(second %)
-                                 (for [t timestamps]
-                                   [t ((data t) k)])))]))
         keyset (get-label-set data)
+        separated (separate-by-labels data keyset)
 
         counts (into {} (for [[k v] separated] [k (count v)] ))
         {long-set true
