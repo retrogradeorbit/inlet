@@ -19,3 +19,27 @@
                            :meminfo {:memory 100}}})
       #{:iptables :meminfo}))))
 
+(deftest test-separate-by-labels
+  (testing "separate-by-labels"
+    (is
+     (=
+      (separate-by-labels {123 {:iptables {:input 20}}
+                           234 {:iptables {:input 10}
+                                :meminfo {:memory 100}}}
+                          [:iptables :meminfo])
+      {:iptables {123 {:input 20} 234 {:input 10}}
+       :meminfo {234 {:memory 100}}}))
+    (is
+     (=
+      (separate-by-labels {123 {:iptables {:input 20}}
+                           234 {:iptables {:input 10}
+                                :meminfo {:memory 100}}}
+                          [:meminfo])
+      {:meminfo {234 {:memory 100}}}))
+    (is
+     (=
+      (separate-by-labels {123 {:iptables {:input 20}}
+                           234 {:iptables {:input 10}
+                                :meminfo {:memory 100}}}
+                          [:iptables])
+      {:iptables {123 {:input 20} 234 {:input 10}}}))))
