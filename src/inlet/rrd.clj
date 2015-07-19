@@ -11,6 +11,8 @@
            [org.rrd4j.DsType]
            [java.awt Color]))
 
+(def db RrdDb)
+
 (def AVERAGE org.rrd4j.ConsolFun/AVERAGE)
 (def MAX org.rrd4j.ConsolFun/MAX)
 
@@ -23,6 +25,30 @@
 
 (defn filename [host key step]
   (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
+(defn make-filename [host key step]
+  (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
+
+(defn add-archive [db type heartbeat min max]
+  (.addArchive db type heartbeat min max))
+
+(defn add-datasource [db label type heartbeat min max]
+  (.addDatasource db label type heartbeat min max))
+
+(defn make-rrd
+  "file is the filename to store the rrd in.
+  earliest is the timestamp of the earliest store.
+  sources is {:label [COUNTER 600 0 200000000]
+              ...}
+  step is the time step
+  archives is [[AVERAGE 0.5 1 86400] ...]"
+  [file earliest step sources archives]
+  (let [d (RrdDef. (str file) earliest step)]
+    (doall
+     (for [[label args] sources]
+       (apply add-datasource d (name label) args)))
+    (doall
+     (map #(apply add-archive d %) archives))
+    (RrdDb. d)))
 
 (defn make-new-rrd [file earliest labels step]
   (let [d (RrdDef. (str file) earliest step)]
@@ -99,3 +125,15 @@
   (if (.exists filename)
     (RrdDb. (str filename))
     (make-new-rrd filename (dec earliest) labels step)))
+
+(defn write-data [rrd label data]
+  (doall
+   (for [t (sort (keys data))]
+     (let [sample (.createSample rrd)
+           val (data t)]
+       (.setTime sample t)
+       (doall (for [k (keys val)]
+                (.setTime sample k (double (get val k)))))
+       (try
+         (.update sample)
+         (catch java.lang.IllegalArgumentException _))))))
