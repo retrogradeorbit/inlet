@@ -44,3 +44,17 @@
                                 :meminfo {:memory 100}}}
                           [:iptables])
       {:iptables {123 {:input 20} 234 {:input 10}}}))))
+
+(deftest test-split-sets
+  (testing "split-sets"
+    (is (= (split-sets {:iptables {1 {:data 1} 2 {:data 2}}
+                        :extra {1 1 2 2 3 3 4 4 5 5}
+                        :meminfo {1 {:data 1}}}
+                       #(> (count (second %)) 1))
+           [
+            ;; true
+            [[:iptables {1 {:data 1}, 2 {:data 2}}] [:extra {1 1, 2 2, 3 3, 4 4, 5 5}]]
+
+            ;; false
+            [[:meminfo {1 {:data 1}}]]
+            ]))))

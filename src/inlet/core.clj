@@ -139,6 +139,12 @@
                      (for [t (keys data)]
                        [t ((data t) label)])))])))
 
+(defn split-sets
+  [by-label pred]
+  (let [{true-set true
+         false-set false} (group-by pred by-label)]
+    [true-set false-set]))
+
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
