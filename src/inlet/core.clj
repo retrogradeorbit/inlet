@@ -159,22 +159,24 @@
         long-set (into {} long-set)
         short-set (into {} short-set)
         filenames (for [s (keys long-set)]
-                   {:filename (filename host s (first-two s))
-                    :name s
+                   {:label s
+                    :fname (filename host s (first-two s))
                     :step (first-two s)
                     :data (separated s)})
 
         ]
     (println
-     (for [k (keys long-set)]
-       (new-and-open (io/file (filename host k (first-two k)))
-                     (keys (second (first (sort (separated k))))) step
-                     (first (sorted-keys k)))))
+     (for [{:keys [label fname step data]} filenames]
+       (new-and-open (io/file (filename host label (first-two label)))
+                     (keys (second (first (sort (separated label))))) step
+                     (first (sorted-keys label)))))
 
-    (println "---------")
-    (println filenames)
-    (println short-set "<<<" long-set)
-    (pprint first-two)))
+    (comment
+      (println "---------")
+      (println filenames)
+      (println short-set "<<<" long-set)
+      (pprint first-two))
+))
 
 
 (defn data [{:keys [params] :as req}]
