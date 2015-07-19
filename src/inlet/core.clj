@@ -106,6 +106,20 @@
     (RrdDb. (str filename))
     (make-new-rrd filename (dec earliest) labels step)))
 
+(defn get-label-set
+  "Take some data first keyed by timestamp, then
+  by label, and returns the set of all featured labels.
+
+  so: {1234 {:iptables {:input 34 ...}...}...}
+  and looks at every timestamp and its child labels
+  (eg :iptables here) and returns a set of all
+  labels such as #{:iptables}"
+  [data]
+  (reduce
+   (fn [acc x]
+     (apply conj acc x))
+   #{}
+   (map (comp keys second) data)))
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
@@ -113,11 +127,6 @@
                  json/read-str
                  proc-data)
         timestamps (sort (keys data))
-        keyset (reduce
-                (fn [acc x]
-                  (apply conj acc x))
-                #{}
-                (map (comp keys second) data))
         separated (into
                    {}
                    (for [k keyset]
@@ -126,6 +135,7 @@
                          (filter #(second %)
                                  (for [t timestamps]
                                    [t ((data t) k)])))]))
+        keyset (get-label-set data)
 
         counts (into {} (for [[k v] separated] [k (count v)] ))
         {long-set true
