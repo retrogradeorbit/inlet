@@ -51,6 +51,16 @@
     (RrdDb. d)))
 
 (defn make-new-rrd [file earliest labels step]
+  (make-rrd (str file) 140000 1
+            {:INPUT [COUNTER 600 0 200000000]
+             :OUTPUT [COUNTER 600 0 200000000]}
+            [[AVERAGE 0.5 1 86400]
+             [AVERAGE 0.5 60 10080]
+             [AVERAGE 0.5 3600 8736]
+             [AVERAGE 0.5 86400 7280]
+             [MAX 0.5 1 600]]))
+
+#_ (defn make-new-rrd [file earliest labels step]
   (let [d (RrdDef. (str file) earliest step)]
     (println "!!!" (.dump d))
     (doall
