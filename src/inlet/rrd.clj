@@ -50,8 +50,19 @@
      (map #(apply add-archive d %) archives))
     (RrdDb. d)))
 
+(def layout
+  {:iptabels
+   {:INPUT [COUNTER 600 0 2]
+    :OUTPUT [COUNTER 600 0 2]}
+   :meminfo
+   {:data [GAUGE 600 0 2]}})
+
+(defn make-rrd-label [file label]
+  (make-new-rrd file )
+  )
+
 (defn make-new-rrd [file earliest labels step]
-  (make-rrd (str file) 140000 1
+  (make-rrd (str file) earliest step
             {:INPUT [COUNTER 600 0 200000000]
              :OUTPUT [COUNTER 600 0 200000000]}
             [[AVERAGE 0.5 1 86400]
