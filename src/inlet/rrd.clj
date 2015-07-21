@@ -71,7 +71,7 @@
    :meminfo
    {:data [GAUGE 600 0 2]}})
 
-(defn make-rrd-label [file label]
+#_ (defn make-rrd-label [file label]
   (make-new-rrd file )
   )
 
