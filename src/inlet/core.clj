@@ -79,7 +79,7 @@
 
         filenames (for [s (keys long-set)]
                     {:label s
-                     :fname (rrd/filename host s (first-two s))
+                     :fname (rrd/make-filename host s (first-two s))
                      :step (first-two s)
                      :data (separated s)})
 
@@ -117,7 +117,7 @@
         nearliest (second timestamps)
         latest (last timestamps)
         step (- nearliest earliest)
-        file (io/file (rrd/filename host "iptables" step))
+        file (io/file (rrd/make-filename host "iptables" step))
         ]
     (let [rrd (if (.exists file)
                 (rrd/db (str file))
