@@ -56,6 +56,14 @@
      :signature (.getSignature head)
      :step (.getStep head)
      :version (.getVersion head)}))
+
+(defn fetch-data [rrd confun dsname start end]
+  (let [fetch-data (.fetchData (.createFetchRequest rrd confun start end))
+        values (.getValues fetch-data (name dsname))
+        rows (.getRowCount fetch-data)]
+    (map #(aget values %) (range rows) )))
+
+
 (def layout
   {:iptabels
    {:INPUT [COUNTER 600 0 2]

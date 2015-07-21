@@ -44,6 +44,10 @@
                      [AVERAGE 0.5 86400 7280]
                      [MAX 0.5 1 600]])]
       (write-data rrd :iptables {140001 {:INPUT 100 :OUTPUT 200}
-                                 140002 {:INPUT 101 :OUTPUT 202}})
-      (is)
-      )))
+                                 140002 {:INPUT 101 :OUTPUT 202}
+                                 140003 {:INPUT 105 :OUTPUT 204}})
+      (is (= 140003 (:last-update (get-header rrd))))
+
+      ;; counters store diffs, so theses are the diffs of the data
+      (is (= '(1.0 4.0) (fetch-data rrd AVERAGE :INPUT 140002 140003)))
+      (is (= '(2.0 2.0) (fetch-data rrd AVERAGE :OUTPUT 140002 140003))))))
