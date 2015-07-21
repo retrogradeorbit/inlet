@@ -168,7 +168,7 @@
            val (data t)]
        (.setTime sample t)
        (doall (for [k (keys val)]
-                (.setTime sample k (double (get val k)))))
+                (.setValue sample (name k) (double (get val k)))))
        (try
          (.update sample)
          (catch java.lang.IllegalArgumentException _))))))
