@@ -46,6 +46,16 @@
      (map #(apply add-archive d %) archives))
     (RrdDb. d)))
 
+(defn get-header [rrd]
+  (let [head (.getHeader rrd)]
+    {:arc-count (.getArcCount head)
+     :ds-count (.getDsCount head)
+     :info (.getInfo head)
+     :last-update (.getLastUpdateTime head)
+     :backend (.getRrdBackend head)
+     :signature (.getSignature head)
+     :step (.getStep head)
+     :version (.getVersion head)}))
 (def layout
   {:iptabels
    {:INPUT [COUNTER 600 0 2]
