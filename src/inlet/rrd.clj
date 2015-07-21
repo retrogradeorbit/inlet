@@ -21,10 +21,6 @@
 (def DERIVE org.rrd4j.DsType/DERIVE)
 (def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
 
-(def step 1)
-
-(defn filename [host key step]
-  (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
 (defn make-filename [host key step]
   (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
 
