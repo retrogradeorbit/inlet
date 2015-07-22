@@ -54,6 +54,8 @@
          false-set false} (group-by pred by-label)]
     [true-set false-set]))
 
+(def =short-sets= (atom {}))
+
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
