@@ -227,6 +227,7 @@
              wrap-params))
 
 (defn -main []
+  (println "starting server on port 5000")
   (run-server app {:port 5000}))
 
 
