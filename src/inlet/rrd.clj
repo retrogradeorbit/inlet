@@ -63,6 +63,58 @@
         rows (.getRowCount fetch-data)]
     (map #(aget values %) (range rows) )))
 
+(defn make-graph [{:keys [width height filename start end
+                          title vertical-label hide-bevel]
+                   :or {:width 900 :height 200 :title "RRD Graph"
+                        :hide-bevel true
+                        :vertical-label "bytes"}}]
+  (let [rrdgdef (RrdGraphDef.)]
+    (doto rrdgdef
+      (.setWidth width)
+      (.setHeight height)
+      (.setFilename filename)
+      (.setStartTime start)
+      (.setEndTime end)
+      (.setTitle title)
+      (.setVerticalLabel vertical-label)
+
+      ;; hide bevel
+      (.setColor RrdGraphConstants/COLOR_SHADEA Color/WHITE)
+      (.setColor RrdGraphConstants/COLOR_SHADEB Color/WHITE)
+
+      ;; background frame
+      (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
+
+      ;; graph background
+      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf8 0xf8 0xff))
+
+      ;; major grid
+      (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
+
+      ;; frame border and minor grid
+      (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
+
+      ;; minor grid
+      (.setNoMinorGrid true)
+      (.setAntiAliasing true)
+      (.setShowSignature false)
+      (.setNoLegend false)
+
+      (.datasource "input" file "INPUT" AVERAGE)
+      ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
+      (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
+      (.datasource "output" file "OUTPUT" AVERAGE)
+      ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
+      (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
+      ;(.hrule 0.6  Color/GREEN "hrule")
+      (.setImageFormat "png"))
+    (RrdGraph. rrdgdef)))
+
+
+
+
+
+
 
 (def layout
   {:iptabels
