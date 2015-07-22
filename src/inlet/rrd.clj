@@ -141,13 +141,16 @@
     (make-new-rrd filename (dec earliest) labels step)))
 
 (defn write-data [rrd label data]
+  (println "write-data" rrd label data)
   (doall
    (for [t (sort (keys data))]
      (let [sample (.createSample rrd)
            val (data t)]
        (.setTime sample t)
        (doall (for [k (keys val)]
-                (.setValue sample (name k) (double (get val k)))))
+                (do (println "writing:" t (name k) (get val k))
+                    (.setValue sample (name k) (double (get val k))))))
+
        (try
          (.update sample)
          (catch java.lang.IllegalArgumentException _))))))
