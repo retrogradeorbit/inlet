@@ -81,24 +81,45 @@
                     {:label s
                      :fname (rrd/make-filename host s (first-two s))
                      :step (first-two s)
-                     :data (separated s)})
-
+                     :data (separated s)
+                     })
+        rrds
+        (into {}
+              (for [{:keys [label fname step data]} filenames]
+                [label (rrd/new-and-open (io/file fname)
+                                         (-> label
+                                             separated sort
+                                             first second
+                                             keys)
+                                         step
+                                         (first (sorted-keys label)))]))
         ]
-    (println
-     (for [{:keys [label fname step data]} filenames]
-       [label (rrd/new-and-open (io/file fname)
-                                (-> label
-                                    separated sort
-                                    first second
-                                    keys)
-                                step
-                                (first (sorted-keys label)))]))
+    ;; write the long sets out
+    (doall (map
+                 #(rrd/write-data (rrds %) % (separated %))
+                 (keys long-set)
+                 ))
 
-    (comment
-      (println "---------")
-      (println filenames)
-      (println short-set "<<<" long-set)
-      (pprint first-two))
+    ;; short-sets need to be assoced into memorised data, so that when the
+    ;; next data packet arrives, we can resurrect it and it will become a long set.
+    (println "====")
+    (println short-set)
+    (println "====")
+
+    ;; (swap! =short-sets=
+    ;;        (fn [old]
+    ;;          (for [[k v] short-set]
+    ;;            (let [data (old k)]
+    ;;              ))
+    ;;          ))
+
+
+    (println "written" (keys long-set) "not-written" (keys short-set))
+
+
+
+
+    "OK"
     ))
 
 
@@ -161,9 +182,39 @@
                (loop []
                  (Thread/sleep 1000)
                  ;(println "graph")
-                 (rrd/make-graph "/tmp/rrd/knives.rrd" "/tmp/knives-1.png" (- (now) 3000) (now))
-                 (rrd/make-graph "/tmp/rrd/knives.rrd" "/tmp/knives-2.png"
-                             (- (now) 1000) (now))
+
+                 (rrd/make-graph
+                  {:title "Meminfo @ knives"
+                   :filename "/tmp/meminfo.png"
+                   :start (- (now) 3000)
+                   :end (now)
+                   :draw [
+                          {:datasource ["memfree"
+                                        "/tmp/rrd/knives/meminfo:20.rrd"
+                                        :MemFree rrd/AVERAGE]
+                           :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                          {:datasource ["memtotal"
+                                        "/tmp/rrd/knives/meminfo:20.rrd"
+                                        :MemFree rrd/AVERAGE]
+                           :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                    ]})
+
+                 (rrd/make-graph
+                  {:title "Traffic @ knives"
+                   :filename "/tmp/traffic.png"
+                   :start (- (now) 3000)
+                   :end (now)
+                   :draw [
+                          {:datasource ["input"
+                                        "/tmp/rrd/knives/iptables:1.rrd"
+                                        :INPUT rrd/AVERAGE]
+                           :chart [:area 0xd0 0x60 0x60 "Input"]}
+                          {:datasource ["output"
+                                        "/tmp/rrd/knives/iptables:1.rrd"
+                                        :OUTPUT rrd/AVERAGE]
+                           :chart [:area 0x70 0x00 0x00 "Output"]}
+                    ]})
+
                  (recur))))
 
 
