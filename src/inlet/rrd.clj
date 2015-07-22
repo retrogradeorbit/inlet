@@ -64,10 +64,14 @@
     (map #(aget values %) (range rows) )))
 
 (defn make-graph [{:keys [width height filename start end
-                          title vertical-label hide-bevel]
-                   :or {:width 900 :height 200 :title "RRD Graph"
-                        :hide-bevel true
-                        :vertical-label "bytes"}}]
+                          title vertical-label draw format]
+                   :or {width 900
+                        height 200
+                        title "RRD Graph"
+                        vertical-label "units"
+                        format "png"
+                        draw []
+                        }}]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
       (.setWidth width)
@@ -98,18 +102,30 @@
       (.setNoMinorGrid true)
       (.setAntiAliasing true)
       (.setShowSignature false)
-      (.setNoLegend false)
+      (.setNoLegend false))
 
-      (.datasource "input" file "INPUT" AVERAGE)
-      ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
-      (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
-      (.datasource "output" file "OUTPUT" AVERAGE)
-      ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
-      (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
-      ;(.hrule 0.6  Color/GREEN "hrule")
-      (.setImageFormat "png"))
+    (doall
+     (for [{[ident rrdfile datasource consfunc] :datasource
+            [type r g b desc] :chart}
+           draw]
+       (do
+         (.datasource rrdgdef ident rrdfile (name datasource) consfunc)
+         (case type
+           :area (.area rrdgdef ident (Color. r g b) desc)))))
+
+    (.setImageFormat rrdgdef format)
     (RrdGraph. rrdgdef)))
 
+
+    ;; (.datasource "input" file "INPUT" AVERAGE)
+    ;;   ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
+
+    ;; (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
+    ;; (.datasource "output" file "OUTPUT" AVERAGE)
+    ;;   ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
+
+    ;; (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
+    ;;   ;(.hrule 0.6  Color/GREEN "hrule")
 
 
 
@@ -153,60 +169,60 @@
       (.addArchive MAX 0.5 1 600))
     (RrdDb. d)))
 
-(defn make-graph [file imagefile earliest latest]
-  (let [rrdgdef (RrdGraphDef.)]
-    (doto rrdgdef
-      (.setWidth 900)
-      (.setHeight 200)
-      (.setFilename imagefile)
-      (.setStartTime earliest)
-      (.setEndTime latest)
-      (.setTitle "Firewall Traffic")
-      (.setVerticalLabel "bytes")
+;; (defn make-graph [file imagefile earliest latest]
+;;   (let [rrdgdef (RrdGraphDef.)]
+;;     (doto rrdgdef
+;;       (.setWidth 900)
+;;       (.setHeight 200)
+;;       (.setFilename imagefile)
+;;       (.setStartTime earliest)
+;;       (.setEndTime latest)
+;;       (.setTitle "Firewall Traffic")
+;;       (.setVerticalLabel "bytes")
 
-      ;; hide bevel
-      (.setColor RrdGraphConstants/COLOR_SHADEA Color/WHITE)
-      (.setColor RrdGraphConstants/COLOR_SHADEB Color/WHITE)
+;;       ;; hide bevel
+;;       (.setColor RrdGraphConstants/COLOR_SHADEA Color/WHITE)
+;;       (.setColor RrdGraphConstants/COLOR_SHADEB Color/WHITE)
 
-      ;; background frame
-      (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
+;;       ;; background frame
+;;       (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
 
-      ;; graph background
-      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf8 0xf8 0xff))
+;;       ;; graph background
+;;       (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf8 0xf8 0xff))
 
-      ;; major grid
-      (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
+;;       ;; major grid
+;;       (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
 
-      ;; frame border and minor grid
-      (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
+;;       ;; frame border and minor grid
+;;       (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
 
-      ;; minor grid
-      (.setNoMinorGrid true)
+;;       ;; minor grid
+;;       (.setNoMinorGrid true)
 
-      (.setAntiAliasing true)
+;;       (.setAntiAliasing true)
 
-      (.setShowSignature false)
+;;       (.setShowSignature false)
 
-      (.setNoLegend false)
+;;       (.setNoLegend false)
 
 
 
-      ;; (.setAltAutoscale true)
-      ;; (.setAltAutoscaleMin false)
-      ;; (.setAltAutoscaleMax false)
+;;       ;; (.setAltAutoscale true)
+;;       ;; (.setAltAutoscaleMin false)
+;;       ;; (.setAltAutoscaleMax false)
 
-      ;(.setMinValue 0)
-      ;(.setMaxValue 1000000)
+;;       ;(.setMinValue 0)
+;;       ;(.setMaxValue 1000000)
 
-      (.datasource "input" file "INPUT" AVERAGE)
-      ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
-      (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
-      (.datasource "output" file "OUTPUT" AVERAGE)
-      ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
-      (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
-      ;(.hrule 0.6  Color/GREEN "hrule")
-      (.setImageFormat "png"))
-    (RrdGraph. rrdgdef)))
+;;       (.datasource "input" file "INPUT" AVERAGE)
+;;       ;(.area "input" (Color. 0xd0 0x60 0x60 ) "Firewall Input Chain")
+;;       (.area "input" (Color. 0x90 0x90 0xe0 ) "Firewall Input Chain")
+;;       (.datasource "output" file "OUTPUT" AVERAGE)
+;;       ;(.area "output" (Color. 0x70 0x00 0x00) "Firewall Output Chain")
+;;       (.area "output" (Color. 0x00 0x00 0x70) "Firewall Output Chain")
+;;       ;(.hrule 0.6  Color/GREEN "hrule")
+;;       (.setImageFormat "png"))
+;;     (RrdGraph. rrdgdef)))
 
 (defn new-and-open [filename labels step earliest]
   (if (.exists filename)

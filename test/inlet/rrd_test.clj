@@ -50,4 +50,20 @@
 
       ;; counters store diffs, so theses are the diffs of the data
       (is (= '(1.0 4.0) (fetch-data rrd AVERAGE :INPUT 140002 140003)))
-      (is (= '(2.0 2.0) (fetch-data rrd AVERAGE :OUTPUT 140002 140003))))))
+      (is (= '(2.0 2.0) (fetch-data rrd AVERAGE :OUTPUT 140002 140003)))
+
+      (let [graph-file "/tmp/graph.png"
+            graph
+            (make-graph
+             {:title "Test Graph"
+              :filename graph-file
+              :start 140000
+              :end 140010
+              :draw
+              [
+               {:datasource ["input" rrd-file :INPUT AVERAGE]
+                :chart [:area 0xd0 0x60 0x60 "Firewall Input Chain"]}
+               {:datasource ["output" rrd-file :OUTPUT AVERAGE]
+                :chart [:area 0x70 0x00 0x00 "Firewall Output Chain"]}]})]
+        (is (.exists (io/file graph-file)))
+        (is (> (.length (io/file graph-file)) 3000))))))
