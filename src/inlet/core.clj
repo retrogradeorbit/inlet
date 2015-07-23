@@ -181,45 +181,49 @@
   (future-cancel grapher)
   )
 
-(defn now [] (/ (.getTime (new java.util.Date)) 1000))
+(defn now [] (int (/ (.getTime (new java.util.Date)) 1000)))
 ;(future-cancel grapher)
 
 (def grapher (future
                (loop []
                  (Thread/sleep 1000)
-                 ;(println "graph")
+                                        ;(println "graph")
 
-                 (rrd/make-graph
-                  {:title "Meminfo @ knives"
-                   :filename "/tmp/meminfo.png"
-                   :start (- (now) 3000)
-                   :end (now)
-                   :draw [
-                          {:datasource ["memfree"
-                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                        :MemFree rrd/AVERAGE]
-                           :chart [:area 0xd0 0x60 0x60 "MemFree"]}
-                          {:datasource ["memtotal"
-                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                        :MemFree rrd/AVERAGE]
-                           :chart [:area 0x70 0x00 0x00 "MemTotal"]}
-                    ]})
-
-                 (rrd/make-graph
-                  {:title "Traffic @ knives"
-                   :filename "/tmp/traffic.png"
-                   :start (- (now) 3000)
-                   :end (now)
-                   :draw [
-                          {:datasource ["input"
-                                        "/tmp/rrd/knives/iptables:1.rrd"
-                                        :INPUT rrd/AVERAGE]
-                           :chart [:area 0xd0 0x60 0x60 "Input"]}
-                          {:datasource ["output"
-                                        "/tmp/rrd/knives/iptables:1.rrd"
-                                        :OUTPUT rrd/AVERAGE]
-                           :chart [:area 0x70 0x00 0x00 "Output"]}
-                    ]})
+                 (println "writing 1")
+                 (when (.exists (io/file "/tmp/rrd/knives/meminfo:20.rrd"))
+                   (rrd/make-graph
+                    {:title "Meminfo @ knives"
+                     :filename "/tmp/meminfo.png"
+                     :start (- (now) 3000)
+                     :end (now)
+                     :draw [
+                            {:datasource ["memfree"
+                                          "/tmp/rrd/knives/meminfo:20.rrd"
+                                          :MemFree rrd/AVERAGE]
+                             :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                            {:datasource ["memtotal"
+                                          "/tmp/rrd/knives/meminfo:20.rrd"
+                                          :MemTotal rrd/AVERAGE]
+                             :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                            ]}))
+                 (println "writing 2")
+                 (when (.exists (io/file "/tmp/rrd/knives/iptables:1.rrd"))
+                   (println (now))
+                   (rrd/make-graph
+                    {:title "Traffic @ knives"
+                     :filename "/tmp/traffic.png"
+                     :start (- (now) 3000)
+                     :end (now)
+                     :draw [
+                            {:datasource ["input"
+                                          "/tmp/rrd/knives/iptables:1.rrd"
+                                          :INPUT rrd/AVERAGE]
+                             :chart [:area 0xd0 0x60 0x60 "Input"]}
+                            {:datasource ["output"
+                                          "/tmp/rrd/knives/iptables:1.rrd"
+                                          :OUTPUT rrd/AVERAGE]
+                             :chart [:area 0x70 0x00 0x00 "Output"]}
+                            ]}))
 
                  (recur))))
 
