@@ -97,10 +97,14 @@
                                          (first (sorted-keys label)))]))
         ]
     ;; write the long sets out
+    (println (map #(vector (rrds %) % (separated %)) (keys long-set)))
+
     (doall (map
                  #(rrd/write-data (rrds %) % (separated %))
                  (keys long-set)
                  ))
+
+    (doall (map #(.close (rrds %)) (keys long-set) ))
 
     ;; short-sets need to be assoced into memorised data, so that when the
     ;; next data packet arrives, we can resurrect it and it will become a long set.
