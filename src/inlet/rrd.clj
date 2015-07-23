@@ -118,27 +118,27 @@
 
 
 (def layout
-  {:iptabels
-   {:INPUT [COUNTER 600 0 2]
-    :OUTPUT [COUNTER 600 0 2]}
-   :meminfo
-   {:data [GAUGE 600 0 2]}})
+  {:iptables [COUNTER 600 0 2]
+   :meminfo [GAUGE 600 0 2]})
 
-(defn make-new-rrd [file earliest labels step]
-  (make-rrd (str file) earliest step
-            {:INPUT [COUNTER 600 0 200000000]
-             :OUTPUT [COUNTER 600 0 200000000]}
-            [[AVERAGE 0.5 1 86400]
-             [AVERAGE 0.5 60 10080]
-             [AVERAGE 0.5 3600 8736]
-             [AVERAGE 0.5 86400 7280]
-             [MAX 0.5 1 600]]))
+(defn make-new-rrd [file type earliest labels step]
+  (println "MAKE-NEW-RRD" file type earliest labels step)
+  (let [datasources
+        (into {} (for [n labels] [(name n) (layout (keyword type))]))]
+    (println "DataSources" datasources)
+    (make-rrd (str file) earliest step
+              datasources
+              [[AVERAGE 0.5 1 86400]
+               [AVERAGE 0.5 60 10080]
+               [AVERAGE 0.5 3600 8736]
+               [AVERAGE 0.5 86400 7280]
+               [MAX 0.5 1 600]])))
 
 
-(defn new-and-open [filename labels step earliest]
+(defn new-and-open [filename type labels step earliest]
   (if (.exists filename)
     (RrdDb. (str filename))
-    (make-new-rrd filename (dec earliest) labels step)))
+    (make-new-rrd filename type (dec earliest) labels step)))
 
 (defn write-data [rrd label data]
   (println "write-data" rrd label data)
@@ -148,9 +148,9 @@
            val (data t)]
        (.setTime sample t)
        (doall (for [k (keys val)]
-                (do (println "writing:" t (name k) (get val k))
+                (do (println "writing:" t (name k) (double (get val k)))
                     (.setValue sample (name k) (double (get val k))))))
 
        (try
          (.update sample)
-         (catch java.lang.IllegalArgumentException _))))))
+         (catch java.lang.IllegalArgumentException _ (println _)))))))

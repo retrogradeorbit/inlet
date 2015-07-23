@@ -89,6 +89,7 @@
         (into {}
               (for [{:keys [label fname step data]} filenames]
                 [label (rrd/new-and-open (io/file fname)
+                                         label
                                          (-> label
                                              separated sort
                                              first second
