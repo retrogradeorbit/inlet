@@ -66,6 +66,11 @@
         keyset (get-label-set data)
         separated (separate-by-labels data keyset)
 
+        ;; merge in atom data
+        separated (merge-with conj separated @=short-sets=)
+
+        _ (println "Separated" separated)
+
         ;; long-sets will be written to rrd storage
         ;; short-sets need more data to determine the step
         [long-set short-set] (split-sets separated #(> (count (second %)) 1))
@@ -113,74 +118,15 @@
     (println short-set)
     (println "====")
 
-    ;; (swap! =short-sets=
-    ;;        (fn [old]
-    ;;          (for [[k v] short-set]
-    ;;            (let [data (old k)]
-    ;;              ))
-    ;;          ))
-
+    (swap! =short-sets= #(merge-with conj % short-set))
+    (println "!!!!Atom:" @=short-sets=)
 
     (println "written" (keys long-set) "not-written" (keys short-set))
-
-
 
 
     "OK"
     ))
 
-
-(defn data [{:keys [params] :as req}]
-  ;(println "data" req)
-  (let [host (params "host")
-        data (-> "data"
-                 params
-                 json/read-str
-                 proc-data)
-        timestamps (sort (keys data))
-
-
-        earliest (first timestamps)
-        first-data (data earliest)
-        nearliest (second timestamps)
-        latest (last timestamps)
-        step (- nearliest earliest)
-        file (io/file (rrd/make-filename host "iptables" step))
-        ]
-    (let [rrd (if (.exists file)
-                (rrd/db (str file))
-                (rrd/make-new-rrd file (dec earliest) first-data))]
-      (doall
-       (for [t timestamps]
-         (let [sample (.createSample rrd)]
-           (.setTime sample  t)
-           (.setValue sample "INPUT" (double (get-in data [t "iptables" "INPUT"])) )
-           (.setValue sample "OUTPUT" (double (get-in data [t "iptables" "OUTPUT"])) )
-           (try
-             (.update sample)
-             (catch java.lang.IllegalArgumentException _))))
-       )
-      (.close rrd)
-      (println rrd "," host ":" earliest "->" latest "." step)
-
-      ;; (make-graph (str file) (- latest 2000 ;00
-      ;;                           ) latest)
-
-
-      "OK")))
-
-
-(comment
-  (defn now [] (/ (.getTime (new java.util.Date)) 1000))
-  (def now )
-  (def grapher (future
-                 (loop []
-                   (Thread/sleep 1000)
-                   (rrd/make-graph "/tmp/rrd/knives.rrd" (- (now) 500) (now))
-                   (recur))))
-
-  (future-cancel grapher)
-  )
 
 (defn now [] (int (/ (.getTime (new java.util.Date)) 1000)))
 ;(future-cancel grapher)

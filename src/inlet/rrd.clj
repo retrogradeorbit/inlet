@@ -140,7 +140,8 @@
     (RrdDb. (str filename))
     (make-new-rrd filename type (dec earliest) labels step)))
 
-(defn write-data [rrd label data]
+(defn write-data [^org.rrd4j.core.RrdDb rrd label data]
+  {:pre [(or (keyword? label) (string? label)) (keys data)]}
   (println "write-data" rrd label data)
   (doall
    (for [t (sort (keys data))]
@@ -151,6 +152,9 @@
                 (do (println "writing:" t (name k) (double (get val k)))
                     (.setValue sample (name k) (double (get val k))))))
 
-       (try
-         (.update sample)
-         (catch java.lang.IllegalArgumentException _ (println _)))))))
+       (.update sample)
+
+       ;; (try
+       ;;   (.update sample)
+       ;;   (catch java.lang.IllegalArgumentException _ (println _)))
+       ))))
