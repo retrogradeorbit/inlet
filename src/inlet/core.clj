@@ -69,11 +69,11 @@
         ;; merge in atom data
         separated (merge-with conj separated @=short-sets=)
 
-        _ (println "Separated" separated)
+        ;_ (println "Separated" separated)
 
         ;; long-sets will be written to rrd storage
         ;; short-sets need more data to determine the step
-        [long-set short-set] (split-sets separated #(> (count (second %)) 1))
+        [long-set short-set] (split-sets separated #(> (count (second %)) 100))
 
 
 
@@ -114,12 +114,18 @@
 
     ;; short-sets need to be assoced into memorised data, so that when the
     ;; next data packet arrives, we can resurrect it and it will become a long set.
-    (println "====")
-    (println short-set)
-    (println "====")
+    ;(println "====")
+    ;(println short-set)
+    ;(println "====")
 
+    ;; everything weve stored, we purge
+    (println "removing" (for [[k v] long-set] [k (count v)]))
+    (swap! =short-sets= (fn [old] (apply dissoc old (keys long-set))))
+
+    ;; add in the short set
+    (println "adding" (for [[k v] short-set] [k (count v)]))
     (swap! =short-sets= #(merge-with conj % short-set))
-    (println "!!!!Atom:" @=short-sets=)
+    ;(println "!!!!Atom:" @=short-sets=)
 
     (println "written" (keys long-set) "not-written" (keys short-set))
 
