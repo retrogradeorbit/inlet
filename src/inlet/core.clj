@@ -54,6 +54,9 @@
          false-set false} (group-by pred by-label)]
     [true-set false-set]))
 
+;; when a POST is complete, but the data is not
+;; enough to determine the step, the remaining
+;; data lives in this atom
 (def =short-sets= (atom {}))
 
 (defn process-data [{:keys [params] :as req}]
@@ -142,7 +145,7 @@
                  (Thread/sleep 1000)
                                         ;(println "graph")
 
-                 (println "writing 1")
+                 ;(println "writing 1")
                  (when (.exists (io/file "/tmp/rrd/knives/meminfo:20.rrd"))
                    (rrd/make-graph
                     {:title "Meminfo @ knives"
@@ -159,7 +162,7 @@
                                           :MemTotal rrd/AVERAGE]
                              :chart [:area 0x70 0x00 0x00 "MemTotal"]}
                             ]}))
-                 (println "writing 2")
+                 ;(println "writing 2")
                  (when (.exists (io/file "/tmp/rrd/knives/iptables:1.rrd"))
                    (println (now))
                    (rrd/make-graph
