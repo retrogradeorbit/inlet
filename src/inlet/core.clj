@@ -159,6 +159,25 @@
 (defn now [] (int (/ (.getTime (new java.util.Date)) 1000)))
 ;(future-cancel grapher)
 
+(def periods
+  [["hour" (* 60 60) 300]
+   ["day" (* 24 60 60) 250]
+   ["week" (* 7 24 60 60) 200]
+   ["month" (* 4 7 24 60 60) 120]
+   ["year" (* 52 7 24 60 60) 60]])
+
+(defn build-graph-series
+  [title output-base drawset]
+  (doall (map (fn [[period period-time period-height]]
+                (rrd/make-graph
+                 {:title (str title "(last " period ")")
+                  :filename (str output-base "-" period ".png")
+                  :height period-height
+                  :start (- (now) period-time)
+                  :end (now)
+                  :draw drawset}))
+              periods)))
+
 (def grapher (future
                (loop []
                  (Thread/sleep 1000)
