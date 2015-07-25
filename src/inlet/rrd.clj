@@ -121,8 +121,8 @@
 
 
 (def layout
-  {:iptables [COUNTER 600 0 2]
-   :meminfo [GAUGE 600 0 2]})
+  {:iptables [COUNTER 600 0 2200000000]
+   :meminfo [GAUGE 600 0 Double/NaN]})
 
 (defn make-new-rrd [file type earliest labels step]
   (println "MAKE-NEW-RRD" file type earliest labels step)
