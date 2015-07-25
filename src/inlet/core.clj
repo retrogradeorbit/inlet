@@ -59,6 +59,8 @@
 ;; data lives in this atom
 (def =short-sets= (atom {}))
 
+(def merge-conj (partial merge-with conj))
+
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         data (-> "data"
@@ -67,12 +69,11 @@
                  proc-data)
         timestamps (sort (keys data))
         keyset (get-label-set data)
-        separated (separate-by-labels data keyset)
 
-        ;; merge in atom data
-        separated (merge-with conj separated @=short-sets=)
-
-        ;_ (println "Separated" separated)
+        ;; data keyed by label. each value is time series data set
+        separated (-> data
+                      (separate-by-labels keyset)
+                      (merge-conj @=short-sets=))
 
         ;; long-sets will be written to rrd storage
         ;; short-sets need more data to determine the step
