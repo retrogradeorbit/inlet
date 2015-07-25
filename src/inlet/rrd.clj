@@ -141,7 +141,7 @@
 (defn new-and-open [filename type labels step earliest]
   (if (.exists filename)
     (RrdDb. (str filename))
-    (make-new-rrd filename type (dec earliest) labels step)))
+    (make-new-rrd filename type earliest labels step)))
 
 (defn write-data [^org.rrd4j.core.RrdDb rrd label data]
   {:pre [(or (keyword? label) (string? label)) (keys data)]}

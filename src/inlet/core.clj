@@ -159,7 +159,7 @@
                  (Thread/sleep 1000)
                                         ;(println "graph")
 
-                 ;(println "writing 1")
+                 (println "writing 1")
                  (when (.exists (io/file "/tmp/rrd/knives/meminfo:20.rrd"))
                    (rrd/make-graph
                     {:title "Meminfo @ knives"
@@ -167,16 +167,17 @@
                      :start (- (now) 3000)
                      :end (now)
                      :draw [
-                            {:datasource ["memfree"
-                                          "/tmp/rrd/knives/meminfo:20.rrd"
-                                          :MemFree rrd/AVERAGE]
-                             :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+
                             {:datasource ["memtotal"
                                           "/tmp/rrd/knives/meminfo:20.rrd"
                                           :MemTotal rrd/AVERAGE]
                              :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                            {:datasource ["memfree"
+                                          "/tmp/rrd/knives/meminfo:20.rrd"
+                                          :MemFree rrd/AVERAGE]
+                             :chart [:area 0xd0 0x60 0x60 "MemFree"]}
                             ]}))
-                 ;(println "writing 2")
+                 (println "writing 2")
                  (when (.exists (io/file "/tmp/rrd/knives/iptables:1.rrd"))
                    (println (now))
                    (rrd/make-graph
