@@ -152,12 +152,12 @@
            val (data t)]
        (.setTime sample t)
        (doall (for [k (keys val)]
-                (do (println "writing:" t (name k) (double (get val k)))
+                (do (println "writing sample:" t (name k) (double (get val k)))
                     (.setValue sample (name k) (double (get val k))))))
 
-       (.update sample)
+       ;(.update sample)
 
-       ;; (try
-       ;;   (.update sample)
-       ;;   (catch java.lang.IllegalArgumentException _ (println _)))
+       (try
+         (println "update returned:" (.update sample))
+         (catch java.lang.IllegalArgumentException _ (println "EXC RAISED:" _)))
        ))))
