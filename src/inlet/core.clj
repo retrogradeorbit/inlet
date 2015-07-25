@@ -79,11 +79,17 @@
         ;; short-sets need more data to determine the step
         [long-set short-set] (split-sets separated #(> (count (second %)) 2))
 
+        ;; for each label, a sorted sequence of timestamps
         sorted-keys (into {} (for [[k v] separated] [k (sort (keys v))]))
 
+        ;; for each label, the calculated step (difference between the lowest two timestamps).
+        ;; this value is only correct if at least two data points are present
         first-two (into {} (for [[k v] separated] [k (- (apply - (take 2 (sort (keys v)))))]))
 
+        ;; the labels and data that have more than two entries
         long-set (into {} long-set)
+
+        ;; the labels and time data that have less than two entries
         short-set (into {} short-set)
 
         filenames (for [s (keys long-set)]
