@@ -77,9 +77,7 @@
 
         ;; long-sets will be written to rrd storage
         ;; short-sets need more data to determine the step
-        [long-set short-set] (split-sets separated #(> (count (second %)) 3))
-
-
+        [long-set short-set] (split-sets separated #(> (count (second %)) 2))
 
         sorted-keys (into {} (for [[k v] separated] [k (sort (keys v))]))
 
