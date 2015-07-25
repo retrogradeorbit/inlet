@@ -21,6 +21,9 @@
 (def DERIVE org.rrd4j.DsType/DERIVE)
 (def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
 
+(defn load-db [filename]
+  (RrdDb. (str filename)))
+
 (defn make-filename [host key step]
   (str "/tmp/rrd/" host "/" key ":" step ".rrd" ))
 
