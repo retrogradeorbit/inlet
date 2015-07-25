@@ -181,44 +181,34 @@
 (def grapher (future
                (loop []
                  (Thread/sleep 1000)
-                                        ;(println "graph")
 
-                 (println "writing 1")
                  (when (.exists (io/file "/tmp/rrd/knives/meminfo:20.rrd"))
-                   (rrd/make-graph
-                    {:title "Meminfo @ knives"
-                     :filename "/tmp/meminfo.png"
-                     :start (- (now) 3000)
-                     :end (now)
-                     :draw [
-
-                            {:datasource ["memtotal"
-                                          "/tmp/rrd/knives/meminfo:20.rrd"
-                                          :MemTotal rrd/AVERAGE]
-                             :chart [:area 0x70 0x00 0x00 "MemTotal"]}
-                            {:datasource ["memfree"
-                                          "/tmp/rrd/knives/meminfo:20.rrd"
-                                          :MemFree rrd/AVERAGE]
-                             :chart [:area 0xd0 0x60 0x60 "MemFree"]}
-                            ]}))
-                 (println "writing 2")
+                   (build-graph-series "Meminfo @ knives"
+                                       "/tmp/meminfo"
+                                       [
+                                        {:datasource ["memtotal"
+                                                      "/tmp/rrd/knives/meminfo:20.rrd"
+                                                      :MemTotal rrd/AVERAGE]
+                                         :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                                        {:datasource ["memfree"
+                                                      "/tmp/rrd/knives/meminfo:20.rrd"
+                                                      :MemFree rrd/AVERAGE]
+                                         :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                                        ])
+                   )
                  (when (.exists (io/file "/tmp/rrd/knives/iptables:1.rrd"))
-                   (println (now))
-                   (rrd/make-graph
-                    {:title "Traffic @ knives"
-                     :filename "/tmp/traffic.png"
-                     :start (- (now) 3000)
-                     :end (now)
-                     :draw [
-                            {:datasource ["input"
-                                          "/tmp/rrd/knives/iptables:1.rrd"
-                                          :INPUT rrd/AVERAGE]
-                             :chart [:area 0xd0 0x60 0x60 "Input"]}
-                            {:datasource ["output"
-                                          "/tmp/rrd/knives/iptables:1.rrd"
-                                          :OUTPUT rrd/AVERAGE]
-                             :chart [:area 0x70 0x00 0x00 "Output"]}
-                            ]}))
+                   (build-graph-series "Traffic @ knives"
+                                       "/tmp/iptables"
+                                       [
+                                        {:datasource ["input"
+                                                      "/tmp/rrd/knives/iptables:1.rrd"
+                                                      :INPUT rrd/AVERAGE]
+                                         :chart [:area 0xd0 0x60 0x60 "Input"]}
+                                        {:datasource ["output"
+                                                      "/tmp/rrd/knives/iptables:1.rrd"
+                                                      :OUTPUT rrd/AVERAGE]
+                                         :chart [:area 0x70 0x00 0x00 "Output"]}
+                                        ]))
 
                  (recur))))
 
@@ -226,6 +216,41 @@
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (POST "/data" req (process-data req) )
+  (GET "/meminfo-year.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/meminfo-year.png")})
+  (GET "/meminfo-month.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/meminfo-month.png")} )
+  (GET "/meminfo-week.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                             :body (io/file "/tmp/meminfo-week.png")} )
+  (GET "/meminfo-day.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/meminfo-day.png")} )
+  (GET "/meminfo-hour.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/meminfo-hour.png")} )
+  (GET "/meminfo" [] "<img src='/meminfo-hour.png'/><img src='/meminfo-day.png'/>
+<img src='meminfo-week.png'/><img src='meminfo-month.png'/><img src='meminfo-year.png'/>")
+   (GET "/iptables-year.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/iptables-year.png")})
+  (GET "/iptables-month.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/iptables-month.png")} )
+  (GET "/iptables-week.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                             :body (io/file "/tmp/iptables-week.png")} )
+  (GET "/iptables-day.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/iptables-day.png")} )
+  (GET "/iptables-hour.png" [] {:status 200
+                               :headers {"Content-Type" "image/png"}
+                               :body (io/file "/tmp/iptables-hour.png")} )
+  (GET "/iptables" [] "<img src='/iptables-hour.png'/><img src='/iptables-day.png'/>
+<img src='iptables-week.png'/><img src='iptables-month.png'/><img src='iptables-year.png'/>")
+
   )
 
 (def app (-> app-routes
