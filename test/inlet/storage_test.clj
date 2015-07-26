@@ -5,8 +5,8 @@
 
 (deftest test-make-filename
   (testing "make-filename creates a correctly formatted filename"
-    (binding [croak.storage/*image-storage-path* "/storage/"
-              croak.storage/*time-format* "yyyy-MM-dd-HH:mm:ss.SSS"]
+    (binding [inlet.storage/*image-storage-path* "/storage/"
+              inlet.storage/*time-format* "yyyy-MM-dd-HH:mm:ss.SSS"]
       (is
        (=
         (str (make-filename (time/date-time 1975 11 20 6 30 30 0)))
