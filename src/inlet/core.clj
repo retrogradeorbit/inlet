@@ -248,8 +248,18 @@
   (GET "/iptables-hour.png" [] {:status 200
                                :headers {"Content-Type" "image/png"}
                                :body (io/file "/tmp/iptables-hour.png")} )
-  (GET "/iptables" [] "<img src='/iptables-hour.png'/><img src='/iptables-day.png'/>
-<img src='iptables-week.png'/><img src='iptables-month.png'/><img src='iptables-year.png'/>")
+  (GET "/iptables" [] "<img id='hour' src='/iptables-hour.png'/><img id='day' src='/iptables-day.png'/>
+<img src='iptables-week.png'/><img src='iptables-month.png'/><img src='iptables-year.png'/>
+<script type='text/javascript'>
+function update() {
+  document.getElementById('day').src = '/iptables-day.png?time=' + new Date();
+  document.getElementById('hour').src = '/iptables-hour.png?time=' + new Date();
+}
+
+window.setInterval(update, 5000);
+
+</script>
+")
 
   )
 
