@@ -69,26 +69,24 @@
 
                  ))
 
-    ;(doall (map #(.close (rrds %)) (keys long-set) ))
+    (doall (map #(.close (rrds %)) (keys long-set) ))
 
     ;; check the reads
-    (println "=>" (first  (sorted-keys "iptables")) (last (sorted-keys "iptables")))
-    (println rrds)
-    (when (some #(= (first %) "iptables") rrds)
-      (println "FETCH=>" (rrd/fetch-data (rrds "iptables")
+    (comment
+      (println "=>" (first  (sorted-keys "iptables")) (last (sorted-keys "iptables")))
+      (println rrds)
+      (when (some #(= (first %) "iptables") rrds)
+        (println "FETCH=>" (rrd/fetch-data (rrds "iptables")
                                         ;(rrd/load-db "/tmp/rrd/knives/iptables:1.rrd")
-                                         rrd/AVERAGE
-                                         "OUTPUT"
-                                         (first (sorted-keys "iptables"))
-                                         (last (sorted-keys "iptables"))
-                                         )))
+                                           rrd/AVERAGE
+                                           "OUTPUT"
+                                           (first (sorted-keys "iptables"))
+                                           (last (sorted-keys "iptables"))
+                                           ))))
 
 
     ;; short-sets need to be assoced into memorised data, so that when the
     ;; next data packet arrives, we can resurrect it and it will become a long set.
-    ;(println "====")
-    ;(println short-set)
-    ;(println "====")
 
     ;; everything weve stored, we purge
     (println "removing" (for [[k v] long-set] [k (count v)]))
