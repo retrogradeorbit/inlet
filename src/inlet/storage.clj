@@ -5,6 +5,11 @@
             [clj-time.coerce :as coerce]
             [clojure.edn :as edn]))
 
+;; when a POST is complete, but the data is not
+;; enough to determine the step, the remaining
+;; data lives in this atom
+(def =short-sets= (atom {}))
+
 (def ^:dynamic *image-storage-path* "/tmp/inlet")
 (def ^:dynamic *time-format* "yyyy-MM-dd-HH:mm:ss.SSS")
 (def ^:dynamic *time-re* #"data-(\d+\-\d+\-\d+-\d+:\d+:\d+\.\d+).edn")

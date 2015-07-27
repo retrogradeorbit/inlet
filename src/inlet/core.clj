@@ -6,13 +6,8 @@
             [clojure.data.json :as json]
             [clojure.java.io :as io]
             [inlet.rrd :as rrd]
-            [inlet.data :as data]))
-
-
-;; when a POST is complete, but the data is not
-;; enough to determine the step, the remaining
-;; data lives in this atom
-(def =short-sets= (atom {}))
+            [inlet.data :as data]
+            [inlet.storage :as storage]))
 
 (def merge-conj (partial merge-with conj))
 
@@ -28,7 +23,7 @@
         ;; data keyed by label. each value is time series data set
         separated (-> dataset
                       (data/separate-by-labels keyset)
-                      (merge-conj @=short-sets=))
+                      (merge-conj @storage/=short-sets=))
 
         ;; long-sets will be written to rrd storage
         ;; short-sets need more data to determine the step
@@ -97,15 +92,14 @@
 
     ;; everything weve stored, we purge
     (println "removing" (for [[k v] long-set] [k (count v)]))
-    (swap! =short-sets= (fn [old] (apply dissoc old (keys long-set))))
+    (swap! storage/=short-sets= (fn [old] (apply dissoc old (keys long-set))))
 
     ;; add in the short set
     (println "adding" (for [[k v] short-set] [k (count v)]))
-    (swap! =short-sets= #(merge-with conj % short-set))
-    ;(println "!!!!Atom:" @=short-sets=)
+    (swap! storage/=short-sets= #(merge-with conj % short-set))
+    ;(println "!!!!Atom:" @storage/=short-sets=)
 
     (println "written" (keys long-set) "not-written" (keys short-set))
-
 
     "OK"
     ))
