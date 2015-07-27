@@ -159,9 +159,37 @@
 
                  (recur))))
 
+(defn image-create [height time]
+  (let [graph (rrd/make-graph
+               {:title "Test"
+
+                ;; create graph in memory
+                ;; http://rrd4j.googlecode.com/svn/trunk/javadoc/reference/org/rrd4j/graph/RrdGraphDef.html#setFilename(java.lang.String)
+                :filename "-"
+
+                :height height
+                :start (- (now) time)
+                :end (now)
+                :drawset [
+                          {:datasource ["memtotal"
+                                        "/tmp/rrd/knives/meminfo:20.rrd"
+                                        :MemTotal rrd/AVERAGE]
+                           :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                          {:datasource ["memfree"
+                                        "/tmp/rrd/knives/meminfo:20.rrd"
+                                        :MemFree rrd/AVERAGE]
+                           :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                          ]})
+        info (.getRrdGraphInfo graph)]
+    {:status 200
+     :headers {"Content-Type" "image/png"}
+     :body (-> info
+               .getBytes
+               io/input-stream)}))
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
+  (GET "/image" req (image-create 400 10000))
   (POST "/data" req (process-data req) )
   (GET "/meminfo-year.png" [] {:status 200
                                :headers {"Content-Type" "image/png"}

@@ -101,11 +101,16 @@
       ;; frame border and minor grid
       (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
 
+      ;; without this, for some reason generating the graph in ram doesnt work!!?
+      ;; (but works fine on disk. rrd4j is buggy mutatey place oriented programming)
+      (.comment "")
+
       ;; minor grid
       (.setNoMinorGrid true)
       (.setAntiAliasing true)
       (.setShowSignature false)
       (.setNoLegend false))
+
 
     (doall
      (for [{[ident rrdfile datasource consfunc] :datasource
