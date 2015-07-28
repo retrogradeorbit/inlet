@@ -170,16 +170,16 @@
                 :height height
                 :start (- (now) time)
                 :end (now)
-                :drawset [
-                          {:datasource ["memtotal"
-                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                        :MemTotal rrd/AVERAGE]
-                           :chart [:area 0x70 0x00 0x00 "MemTotal"]}
-                          {:datasource ["memfree"
-                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                        :MemFree rrd/AVERAGE]
-                           :chart [:area 0xd0 0x60 0x60 "MemFree"]}
-                          ]})
+                :draw [
+                       {:datasource ["memtotal"
+                                     "/tmp/rrd/knives/meminfo:20.rrd"
+                                     :MemTotal rrd/AVERAGE]
+                        :chart [:area 0x70 0x00 0x00 "MemTotal"]}
+                       {:datasource ["memfree"
+                                     "/tmp/rrd/knives/meminfo:20.rrd"
+                                     :MemFree rrd/AVERAGE]
+                        :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                       ]})
         info (.getRrdGraphInfo graph)]
     {:status 200
      :headers {"Content-Type" "image/png"}
