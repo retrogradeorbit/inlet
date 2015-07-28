@@ -49,7 +49,9 @@
      (map #(apply add-archive d %) archives))
     (RrdDb. d)))
 
-(defn get-header [rrd]
+(defn get-header
+  "Turn an RRD header into a clojure hashmap"
+  [rrd]
   (let [head (.getHeader rrd)]
     {:arc-count (.getArcCount head)
      :ds-count (.getDsCount head)
