@@ -162,23 +162,34 @@
                    (recur)))))
 
 
+
+
+(defn image-create [{{:strs [duration height host db title]
+                      :or {duration "10000"
+                           height "200"
+                           host "knives"
+                           db "meminfo"
+                           title "This is the default title"
+                           }
+                      :as params} :params}]
+  (println "params:" params)
   (let [graph (rrd/make-graph
-               {:title "Test"
+               {:title title
 
                 ;; create graph in memory
                 ;; http://rrd4j.googlecode.com/svn/trunk/javadoc/reference/org/rrd4j/graph/RrdGraphDef.html#setFilename(java.lang.String)
                 :filename "-"
 
-                :height height
-                :start (- (now) time)
+                :height (Integer. height)
+                :start (- (now) (Integer. duration))
                 :end (now)
                 :draw [
                        {:datasource ["memtotal"
-                                     "/tmp/rrd/knives/meminfo:20.rrd"
+                                     (str "/tmp/rrd/" host "/" db ":20.rrd")
                                      :MemTotal rrd/AVERAGE]
                         :chart [:area 0x70 0x00 0x00 "MemTotal"]}
                        {:datasource ["memfree"
-                                     "/tmp/rrd/knives/meminfo:20.rrd"
+                                     (str "/tmp/rrd/" host "/" db ":20.rrd")
                                      :MemFree rrd/AVERAGE]
                         :chart [:area 0xd0 0x60 0x60 "MemFree"]}
                        ]})
@@ -191,7 +202,7 @@
 
 (defroutes app-routes
   (GET "/" [] "Hello World")
-  (GET "/image" req (image-create 400 10000))
+  (GET "/image" req (image-create req))
   (POST "/data" req (process-data req) )
   (GET "/meminfo-year.png" [] {:status 200
                                :headers {"Content-Type" "image/png"}
