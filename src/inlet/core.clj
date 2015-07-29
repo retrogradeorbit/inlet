@@ -126,44 +126,6 @@
               periods)))
 
 
-(comment
-  (def grapher (future
-                 (loop []
-                   (Thread/sleep 1000)
-
-                   (when (.exists (io/file "/tmp/rrd/knives/meminfo:20.rrd"))
-                     (build-graph-series "Meminfo @ knives"
-                                         "/tmp/meminfo"
-                                         [
-                                          {:datasource ["memtotal"
-                                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                                        :MemTotal rrd/AVERAGE]
-                                           :chart [:area 0x70 0x00 0x00 "MemTotal"]}
-                                          {:datasource ["memfree"
-                                                        "/tmp/rrd/knives/meminfo:20.rrd"
-                                                        :MemFree rrd/AVERAGE]
-                                           :chart [:area 0xd0 0x60 0x60 "MemFree"]}
-                                          ])
-                     )
-                   (when (.exists (io/file "/tmp/rrd/knives/iptables:1.rrd"))
-                     (build-graph-series "Traffic @ knives"
-                                         "/tmp/iptables"
-                                         [
-                                          {:datasource ["input"
-                                                        "/tmp/rrd/knives/iptables:1.rrd"
-                                                        :INPUT rrd/AVERAGE]
-                                           :chart [:area 0xd0 0x60 0x60 "Input"]}
-                                          {:datasource ["output"
-                                                        "/tmp/rrd/knives/iptables:1.rrd"
-                                                        :OUTPUT rrd/AVERAGE]
-                                           :chart [:area 0x70 0x00 0x00 "Output"]}
-                                          ]))
-
-                   (recur)))))
-
-
-
-
 (defn image-create [{{:strs [duration height host db title]
                       :or {duration "10000"
                            height "200"
