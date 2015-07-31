@@ -88,14 +88,11 @@
     ;; short-sets need to be assoced into memorised data, so that when the
     ;; next data packet arrives, we can resurrect it and it will become a long set.
 
-    ;; everything weve stored, we purge
-    (println "removing" (for [[k v] long-set] [k (count v)]))
-    (swap! storage/=short-sets= (fn [old] (apply dissoc old (keys long-set))))
-
-    ;; add in the short set
-    (println "adding" (for [[k v] short-set] [k (count v)]))
-    (swap! storage/=short-sets= #(merge-with conj % short-set))
-    ;(println "!!!!Atom:" @storage/=short-sets=)
+    ;; everything weve stored, we purge, and then we add in the short set
+    (swap! storage/=short-sets=
+           #(merge-with conj
+                        (apply dissoc % (keys long-set))
+                        short-set))
 
     (println "written" (keys long-set) "not-written" (keys short-set))
 
