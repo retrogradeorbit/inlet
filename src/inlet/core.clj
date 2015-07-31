@@ -122,16 +122,17 @@
                   :draw drawset}))
               periods)))
 
-
-(defn image-create [{{:strs [duration height host db title]
+(defn image-create [{{:strs [duration height host db step title data data2]
                       :or {duration "10000"
                            height "200"
                            host "knives"
                            db "meminfo"
+                           step "20"
                            title "This is the default title"
+                           data "MemTotal"
+                           data2 "MemFree"
                            }
                       :as params} :params}]
-  (println "params:" params)
   (let [graph (rrd/make-graph
                {:title title
 
@@ -143,14 +144,14 @@
                 :start (- (now) (Integer. duration))
                 :end (now)
                 :draw [
-                       {:datasource ["memtotal"
-                                     (str "/tmp/rrd/" host "/" db ":20.rrd")
-                                     :MemTotal rrd/AVERAGE]
-                        :chart [:area 0x70 0x00 0x00 "MemTotal"]}
-                       {:datasource ["memfree"
-                                     (str "/tmp/rrd/" host "/" db ":20.rrd")
-                                     :MemFree rrd/AVERAGE]
-                        :chart [:area 0xd0 0x60 0x60 "MemFree"]}
+                       {:datasource ["ds1"
+                                     (str "/tmp/rrd/" host "/" db ":" step ".rrd")
+                                     (keyword data) rrd/AVERAGE]
+                        :chart [:area 0x70 0x00 0x00 data]}
+                       {:datasource ["ds2"
+                                     (str "/tmp/rrd/" host "/" db ":" step ".rrd")
+                                     (keyword data2) rrd/AVERAGE]
+                        :chart [:area 0xd0 0x60 0x60 data2]}
                        ]})
         info (.getRrdGraphInfo graph)]
     {:status 200
