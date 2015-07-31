@@ -164,52 +164,50 @@
   (GET "/" [] "Hello World")
   (GET "/image" req (image-create req))
   (POST "/data" req (process-data req) )
-  (GET "/meminfo-year.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/meminfo-year.png")})
-  (GET "/meminfo-month.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/meminfo-month.png")} )
-  (GET "/meminfo-week.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                             :body (io/file "/tmp/meminfo-week.png")} )
-  (GET "/meminfo-day.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/meminfo-day.png")} )
-  (GET "/meminfo-hour.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/meminfo-hour.png")} )
-  (GET "/meminfo" [] "<img src='/meminfo-hour.png'/><img src='/meminfo-day.png'/>
-<img src='meminfo-week.png'/><img src='meminfo-month.png'/><img src='meminfo-year.png'/>")
-   (GET "/iptables-year.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/iptables-year.png")})
-  (GET "/iptables-month.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/iptables-month.png")} )
-  (GET "/iptables-week.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                             :body (io/file "/tmp/iptables-week.png")} )
-  (GET "/iptables-day.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/iptables-day.png")} )
-  (GET "/iptables-hour.png" [] {:status 200
-                               :headers {"Content-Type" "image/png"}
-                               :body (io/file "/tmp/iptables-hour.png")} )
-  (GET "/iptables" [] "<img id='hour' src='/iptables-hour.png'/><img id='day' src='/iptables-day.png'/>
-<img src='iptables-week.png'/><img src='iptables-month.png'/><img src='iptables-year.png'/>
+
+  (GET "/meminfo/graph" []
+       {:status 200
+        :headers {"Content-Type" "image/png"}
+        :body (io/file "/tmp/meminfo-hour.png")} )
+  (GET "/meminfo" [] "
+<img id='ten-mins' src='/image?duration=600&height=220&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+10+Minutes'/>
+<img id='hour' src='/image?duration=3600&height=140&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Hour'/>
+<img id='day' src='/image?duration=86400&height=100&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Day'/>
+<img src='/image?duration=604800&height=85&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Week'/>
+<img src='/image?duration=2419200&height=70&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Month'/>
+<img src='/image?duration=31449600&height=55&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Year'/>
 <script type='text/javascript'>
 function update() {
-  document.getElementById('day').src = '/iptables-day.png?time=' + new Date();
-  document.getElementById('hour').src = '/iptables-hour.png?time=' + new Date();
+  document.getElementById('day').src = '/image?duration=86400&height=100&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Day&time=' + new Date();
+  document.getElementById('hour').src = '/image?duration=3600&height=140&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Hour&time=' + new Date();
+  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+10+Minutes&time=' + new Date();
 }
 
 window.setInterval(update, 5000);
 
 </script>
+
 ")
 
-  )
+  (GET "/iptables" [] "
+<img src='/image?duration=31449600&height=50&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Year'/>
+<img src='/image?duration=2419200&height=75&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Month'/>
+<img src='/image?duration=604800&height=100&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Week'/>
+<img id='day' src='/image?duration=86400&height=140&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Day'/>
+<img id='hour' src='/image?duration=3600&height=180&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Hour'/>
+<img id='ten-mins' src='/image?duration=600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+10+Minutes'/>
+<script type='text/javascript'>
+function update() {
+  document.getElementById('day').src = '/image?duration=86400&height=180&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Day&time=' + new Date();
+  document.getElementById('hour').src = '/image?duration=3600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Hour&time=' + new Date();
+  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+10+Minutes&time=' + new Date();
+}
+
+window.setInterval(update, 5000);
+
+</script>
+
+"))
 
 (def app (-> app-routes
              wrap-params))
