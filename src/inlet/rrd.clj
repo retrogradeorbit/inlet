@@ -123,7 +123,6 @@
       (.setShowSignature false)
       (.setNoLegend false))
 
-
     (doall
      (for [{[ident rrdfile datasource consfunc] :datasource
             [type r g b desc] :chart}
@@ -135,7 +134,6 @@
 
     (.setImageFormat rrdgdef format)
     (RrdGraph. rrdgdef)))
-
 
 (def layout
   {:iptables [COUNTER 600 0 2200000000]
@@ -153,7 +151,6 @@
                [AVERAGE 0.5 3600 8736]
                [AVERAGE 0.5 86400 7280]
                [MAX 0.5 1 600]])))
-
 
 (defn new-and-open [filename type labels step earliest]
   (if (.exists filename)
