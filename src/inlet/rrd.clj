@@ -77,13 +77,19 @@
     (map #(aget values %) (range rows) )))
 
 (defn make-graph [{:keys [width height filename start end
-                          title vertical-label draw format]
+                          title vertical-label draw format
+                          back-color canvas-color
+                          major-grid-color grid-color]
                    :or {width 900
                         height 200
                         title "RRD Graph"
                         vertical-label "units"
                         format "png"
                         draw []
+                        back-color 0xffffff
+                        canvas-color 0xfff8f8
+                        major-grid-color 0x500000
+                        grid-color 0xa0a0a0
                         }}]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
@@ -96,24 +102,20 @@
       (.setVerticalLabel vertical-label)
 
       ;; hide bevel
-      (.setColor RrdGraphConstants/COLOR_SHADEA Color/WHITE)
-      (.setColor RrdGraphConstants/COLOR_SHADEB Color/WHITE)
+      (.setColor RrdGraphConstants/COLOR_SHADEA (Color. back-color))
+      (.setColor RrdGraphConstants/COLOR_SHADEB (Color. back-color))
 
       ;; background frame
-      (.setColor RrdGraphConstants/COLOR_BACK Color/WHITE)
+      (.setColor RrdGraphConstants/COLOR_BACK (Color. back-color))
 
       ;; graph background
-      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. 0xf8 0xf8 0xff))
+      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. canvas-color))
 
       ;; major grid
-      (.setColor RrdGraphConstants/COLOR_MGRID (Color. 0x50 0x00 0x00))
+      (.setColor RrdGraphConstants/COLOR_MGRID (Color. major-grid-color))
 
       ;; frame border and minor grid
-      (.setColor RrdGraphConstants/COLOR_GRID (Color. 0xa0 0xa0 0xa0))
-
-      ;; without this, for some reason generating the graph in ram doesnt work!!?
-      ;; (but works fine on disk. rrd4j is buggy mutatey place oriented programming)
-      (.comment "")
+      (.setColor RrdGraphConstants/COLOR_GRID (Color. grid-color))
 
       ;; minor grid
       (.setNoMinorGrid true)
