@@ -13,13 +13,21 @@
 
 (def db RrdDb)
 
+;; Consolidation functions
 (def AVERAGE org.rrd4j.ConsolFun/AVERAGE)
+(def MIN org.rrd4j.ConsolFun/MIN)
 (def MAX org.rrd4j.ConsolFun/MAX)
+(def LAST org.rrd4j.ConsolFun/LAST)
+(def FIRST org.rrd4j.ConsolFun/FIRST)
+(def TOTAL org.rrd4j.ConsolFun/TOTAL)
 
+;; Datasource types
 (def GAUGE org.rrd4j.DsType/GAUGE)
 (def COUNTER org.rrd4j.DsType/COUNTER)
 (def DERIVE org.rrd4j.DsType/DERIVE)
 (def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
+
+
 
 (defn load-db [filename]
   (RrdDb. (str filename)))
