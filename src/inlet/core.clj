@@ -14,9 +14,9 @@
 (defn process-data [{:keys [params] :as req}]
   (let [host (params "host")
         dataset (-> "data"
-                 params
-                 json/read-str
-                 data/proc-data)
+                    params
+                    json/read-str
+                    data/proc-data)
         timestamps (sort (keys dataset))
         keyset (data/get-label-set dataset)
 
