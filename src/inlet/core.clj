@@ -94,6 +94,21 @@
    ["month" (* 4 7 24 60 60) 120]
    ["year" (* 52 7 24 60 60) 60]])
 
+(def config
+  {:iptables
+   {:step 1
+    :draw
+    [
+     [:area 0x700000 :INPUT]
+     [:area 0xd06060 :OUTPUT]]}
+
+   :meminfo
+   {:step 20
+    :draw
+    [
+     [:area 0x700000 :MemFree]
+     [:area 0xd06060 :MemTotal]]}})
+
 (defn build-graph-series
   [title output-base drawset]
   (doall (map (fn [[period period-time period-height]]
