@@ -215,14 +215,3 @@ window.setInterval(update, 5000);
 (defn -main []
   (println "starting server on port 5000")
   (run-server app {:port 5000}))
-
-
-#_ (defn test []
-  (rrd/rrd "/tmp/rrd.rrd"
-           :start-time 0
-           :step 300
-           (rrd/data-source "a" rrd/GAUGE 600 Double/NaN Double/NaN)
-           (rrd/round-robin-archive rrd/AVERAGE 0.5 1 300)
-           (rrd/round-robin-archive rrd/MIN 0.5 12 300)
-           (rrd/round-robin-archive rrd/MAX 0.5 12 300))
-  )
