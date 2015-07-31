@@ -162,19 +162,15 @@
 
 (defn write-data [^org.rrd4j.core.RrdDb rrd label data]
   {:pre [(or (keyword? label) (string? label)) (keys data)]}
-  (println "write-data" rrd label data)
   (doall
    (for [t (sort (keys data))]
      (let [sample (.createSample rrd)
            val (data t)]
        (.setTime sample t)
-       (doall (for [k (keys val)]
-                (do (println "writing sample:" t (name k) (double (get val k)))
-                    (.setValue sample (name k) (double (get val k))))))
-
-       ;(.update sample)
+       (doall
+        (for [k (keys val)]
+          (.setValue sample (name k) (double (get val k)))))
 
        (try
-         (println "update returned:" (.update sample))
-         (catch java.lang.IllegalArgumentException _ (println "EXC RAISED:" _)))
-       ))))
+         (.update sample)
+         (catch java.lang.IllegalArgumentException _ (println "Sample::update raised:" _)))))))
