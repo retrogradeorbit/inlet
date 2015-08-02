@@ -83,7 +83,7 @@
   ([r g b a] (Color. r g b a)))
 
 (defn make-graph [{:keys [width height filename start end
-                          title vertical-label draw format
+                          title vertical-label draw data format
                           back-color canvas-color
                           major-grid-color grid-color]
                    :or {width 900
@@ -92,10 +92,11 @@
                         vertical-label "units"
                         format "png"
                         draw []
-                        back-color 0xffffff
-                        canvas-color 0xfff8f8
-                        major-grid-color 0x500000
-                        grid-color 0xa0a0a0
+                        data []
+                        back-color [0xffffff]
+                        canvas-color [0xfff8f8]
+                        major-grid-color [0x500000]
+                        grid-color [0xa0a0a0]
                         }}]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
@@ -108,20 +109,20 @@
       (.setVerticalLabel vertical-label)
 
       ;; hide bevel
-      (.setColor RrdGraphConstants/COLOR_SHADEA (Color. back-color))
-      (.setColor RrdGraphConstants/COLOR_SHADEB (Color. back-color))
+      (.setColor RrdGraphConstants/COLOR_SHADEA (apply color back-color))
+      (.setColor RrdGraphConstants/COLOR_SHADEB (apply color back-color))
 
       ;; background frame
-      (.setColor RrdGraphConstants/COLOR_BACK (Color. back-color))
+      (.setColor RrdGraphConstants/COLOR_BACK (apply color back-color))
 
       ;; graph background
-      (.setColor RrdGraphConstants/COLOR_CANVAS (Color. canvas-color))
+      (.setColor RrdGraphConstants/COLOR_CANVAS (apply color canvas-color))
 
       ;; major grid
-      (.setColor RrdGraphConstants/COLOR_MGRID (Color. major-grid-color))
+      (.setColor RrdGraphConstants/COLOR_MGRID (apply color major-grid-color))
 
       ;; frame border and minor grid
-      (.setColor RrdGraphConstants/COLOR_GRID (Color. grid-color))
+      (.setColor RrdGraphConstants/COLOR_GRID (apply color grid-color))
 
       ;; minor grid
       (.setNoMinorGrid true)
