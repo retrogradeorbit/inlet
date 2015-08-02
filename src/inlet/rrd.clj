@@ -137,12 +137,15 @@
 
     (doall
      (for [{[ident rrdfile datasource consfunc] :datasource
-            [type r g b desc] :chart}
+            [type rgb desc] :chart}
            draw]
        (do
-         (.datasource rrdgdef ident rrdfile (name datasource) consfunc)
+         ;(.datasource rrdgdef ident rrdfile (name datasource) consfunc)
          (case type
-           :area (.area rrdgdef ident (Color. r g b) desc)))))
+           :area (.area rrdgdef (name desc) (apply color rgb) (name desc))
+           :stack (.stack rrdgdef (name desc) (apply color rgb) (name desc))
+           :line (.line rrdgdef (name desc) (apply color rgb) (name desc))
+           ))))
 
     (.setImageFormat rrdgdef format)
     (RrdGraph. rrdgdef)))
