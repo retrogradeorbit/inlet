@@ -97,17 +97,34 @@
 (def config
   {:iptables
    {:step 1
+    :canvas-color [0xffffff]
+    :major-grid-color [0x00 0x00 0x00 0x20]
+    :data
+    [
+     ;[:def "ln1=INPUT,OUTPUT,+"]
+     ]
     :draw
     [
-     [:area 0x700000 :INPUT]
-     [:area 0xd06060 :OUTPUT]]}
+     [:area [0x70 0x00 0x00] :INPUT]
+     [:area [0xd0 0x60 0x60] :OUTPUT]]}
 
    :meminfo
    {:step 20
+    :canvas-color [0xffffff]
+    :major-grid-color [0x00 0x00 0x00 0x20]
+    :data
+    [
+     [:def "free" "/tmp/rrd/knives/meminfo:20.rrd" "MemFree" rrd/AVERAGE]
+     [:def "total" "/tmp/rrd/knives/meminfo:20.rrd" "MemTotal" rrd/AVERAGE]
+     [:cdef "used" "total,free,-"]
+     ]
     :draw
     [
-     [:area 0x700000 :MemFree]
-     [:area 0xd06060 :MemTotal]]}})
+     [:area [0xEC 0xD7 0x48 0x30] :free]
+     ;[:stack [0xC9 0xB2 0x15 0x30] :Cached]
+     [:stack [0xff 0x00 0x00 0x30] :used]
+ ;    [:stack [0x00 0x00 0x80 0x30] :MemUsed]
+     ]}})
 
 (defn build-graph-series
   [title output-base drawset]
