@@ -138,18 +138,17 @@
                   :draw drawset}))
               periods)))
 
-(defn image-create [{{:strs [duration height host db step title data data2]
+(defn image-create [{{:strs [duration height host db title]
                       :or {duration "10000"
                            height "200"
                            host "knives"
                            db "meminfo"
-                           step "20"
                            title "This is the default title"
-                           data "MemTotal"
-                           data2 "MemFree"
                            }
                       :as params} :params}]
-  (let [graph (rrd/make-graph
+  (let [{:keys [step draw data canvas-color major-grid-color]} (config (keyword db))
+        present (now)
+        graph (rrd/make-graph
                {:title title
 
                 ;; create graph in memory
@@ -157,18 +156,23 @@
                 :filename "-"
 
                 :height (Integer. height)
-                :start (- (now) (Integer. duration))
-                :end (now)
-                :draw [
-                       {:datasource ["ds1"
-                                     (str "/tmp/rrd/" host "/" db ":" step ".rrd")
-                                     (keyword data) rrd/AVERAGE]
-                        :chart [:area 0x70 0x00 0x00 data]}
-                       {:datasource ["ds2"
-                                     (str "/tmp/rrd/" host "/" db ":" step ".rrd")
-                                     (keyword data2) rrd/AVERAGE]
-                        :chart [:area 0xd0 0x60 0x60 data2]}
-                       ]})
+                :start (- present (Integer. duration))
+                :end present
+                :canvas-color canvas-color
+                :major-grid-color major-grid-color
+
+                :data data
+
+                :draw
+                (vec
+                 (for [[t col val] draw]
+                   {
+                    ;; :datasource [(str (gensym))
+                    ;;              (rrd/make-filename host db step)
+                    ;;              val rrd/AVERAGE]
+                    :chart [t col val]}))
+
+})
         info (.getRrdGraphInfo graph)]
     {:status 200
      :headers {"Content-Type" "image/png"}
