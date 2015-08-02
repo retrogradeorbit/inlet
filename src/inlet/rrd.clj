@@ -130,6 +130,11 @@
       (.setShowSignature false)
       (.setNoLegend false))
 
+    (doseq [[type a b c d] data]
+      (case type
+        :def (.datasource rrdgdef a b c d)
+        :cdef (.datasource rrdgdef a b)))
+
     (doall
      (for [{[ident rrdfile datasource consfunc] :datasource
             [type r g b desc] :chart}
