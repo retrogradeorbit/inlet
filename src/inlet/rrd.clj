@@ -76,6 +76,12 @@
         rows (.getRowCount fetch-data)]
     (map #(aget values %) (range rows) )))
 
+(defn color
+  ([rgb] (Color. rgb))
+  ([rgb a] (Color. rgb a))
+  ([r g b] (Color. r g b))
+  ([r g b a] (Color. r g b a)))
+
 (defn make-graph [{:keys [width height filename start end
                           title vertical-label draw format
                           back-color canvas-color
