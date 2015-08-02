@@ -62,8 +62,8 @@
               :draw
               [
                {:datasource ["input" rrd-file :INPUT AVERAGE]
-                :chart [:area 0xd0 0x60 0x60 "Firewall Input Chain"]}
+                :chart [:area 0xd06060 "Firewall Input Chain"]}
                {:datasource ["output" rrd-file :OUTPUT AVERAGE]
-                :chart [:area 0x70 0x00 0x00 "Firewall Output Chain"]}]})]
+                :chart [:area 0x700000 "Firewall Output Chain"]}]})]
         (is (.exists (io/file graph-file)))
         (is (> (.length (io/file graph-file)) 3000))))))
