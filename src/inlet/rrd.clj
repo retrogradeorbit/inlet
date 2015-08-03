@@ -131,10 +131,6 @@
       (.setShowSignature false)
       (.setNoLegend false))
 
-    (println defs)
-    (println cdefs)
-
-
     (doseq
         [{:keys [label datapoint func]} defs]
       (.datasource rrdgdef label rrd datapoint func))
