@@ -174,29 +174,10 @@
                 :end present
                 :canvas-color canvas-color
                 :major-grid-color major-grid-color
-
-                ;; (def db "meminfo")
-                ;; (def conf (config (keyword db)))
-                ;; (def step (:step conf))
-                ;; (def draw (:draw conf))
-                ;; (def host "knives")
-                ;; (str (gensym))
-
-                ;:data data
                 :rrd (rrd/make-filename host db step)
                 :cdefs cdefs
                 :defs defs
-
-                :draw
-                (vec
-                 (for [[t col val] draw]
-                   {
-                    ;; :datasource [(str (gensym))
-                    ;;              (rrd/make-filename host db step)
-                    ;;              val rrd/AVERAGE]
-                    :chart [t col val]}))
-
-})
+                :draw draw})
         info (.getRrdGraphInfo graph)]
     {:status 200
      :headers {"Content-Type" "image/png"}
