@@ -143,17 +143,12 @@
         [{:keys [label rpn]} cdefs]
       (.datasource rrdgdef label rpn))
 
-    (doall
-     (for [{[ident rrdfile datasource consfunc] :datasource
-            [type rgb desc] :chart}
-           draw]
-       (do
-                                        ;(.datasource rrdgdef ident rrdfile (name datasource) consfunc)
-         (case type
-           :area (.area rrdgdef (name desc) (apply color rgb) (name desc))
-           :stack (.stack rrdgdef (name desc) (apply color rgb) (name desc))
-           :line (.line rrdgdef (name desc) (apply color rgb) (name desc))
-           ))))
+    (doseq
+        [{:keys [type color label]} draw]
+      (case type
+        :area (.area rrdgdef (name label) (apply make-color color) (name label))
+        :stack (.stack rrdgdef (name label) (apply make-color color) (name label))
+        :line (.line rrdgdef (name label) (apply make-color color) (name label))))
 
     (.setImageFormat rrdgdef format)
     (RrdGraph. rrdgdef)))
