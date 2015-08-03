@@ -155,7 +155,8 @@
                            title "This is the default title"
                            }
                       :as params} :params}]
-  (let [{:keys [step draw data canvas-color major-grid-color]} (config (keyword db))
+  (let [{:keys [step draw data canvas-color major-grid-color
+                cdefs defs]} (config (keyword db))
         present (now)
         graph (rrd/make-graph
                {:title title
@@ -170,7 +171,17 @@
                 :canvas-color canvas-color
                 :major-grid-color major-grid-color
 
-                :data data
+                ;; (def db "meminfo")
+                ;; (def conf (config (keyword db)))
+                ;; (def step (:step conf))
+                ;; (def draw (:draw conf))
+                ;; (def host "knives")
+                ;; (str (gensym))
+
+                ;:data data
+                :rrd (rrd/make-filename host db step)
+                :cdefs cdefs
+                :defs defs
 
                 :draw
                 (vec
