@@ -101,7 +101,8 @@
     :major-grid-color [0x00 0x00 0x00 0x20]
     :data
     [
-     ;[:def "ln1=INPUT,OUTPUT,+"]
+     [:def "INPUT" "/tmp/rrd/knives/iptables:1.rrd" "INPUT" rrd/AVERAGE]
+     [:def "OUTPUT" "/tmp/rrd/knives/iptables:1.rrd" "OUTPUT" rrd/AVERAGE]
      ]
     :draw
     [
@@ -121,10 +122,7 @@
     :draw
     [
      [:area [0xEC 0xD7 0x48 0x30] :free]
-     ;[:stack [0xC9 0xB2 0x15 0x30] :Cached]
-     [:stack [0xff 0x00 0x00 0x30] :used]
- ;    [:stack [0x00 0x00 0x80 0x30] :MemUsed]
-     ]}})
+     [:stack [0xff 0x00 0x00 0x30] :used]]}})
 
 (defn build-graph-series
   [title output-base drawset]
