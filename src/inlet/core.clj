@@ -113,12 +113,23 @@
    {:step 20
     :canvas-color [0xffffff]
     :major-grid-color [0x00 0x00 0x00 0x20]
-    :data
+    :defs
     [
-     [:def "free" "/tmp/rrd/knives/meminfo:20.rrd" "MemFree" rrd/AVERAGE]
-     [:def "total" "/tmp/rrd/knives/meminfo:20.rrd" "MemTotal" rrd/AVERAGE]
-     [:cdef "used" "total,free,-"]
+     {:label "free"
+      :datapoint "MemFree"
+      :func rrd/AVERAGE}
+     {:label "total"
+      :datapoint "MemTotal"
+      :func rrd/AVERAGE}
      ]
+
+    :cdefs
+    [
+     {:label "used"
+      :rpn "total,free,-"
+      }
+     ]
+
     :draw
     [
      [:area [0xEC 0xD7 0x48 0x30] :free]
