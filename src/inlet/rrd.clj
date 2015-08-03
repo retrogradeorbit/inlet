@@ -85,7 +85,8 @@
 (defn make-graph [{:keys [width height filename start end
                           title vertical-label draw data format
                           back-color canvas-color
-                          major-grid-color grid-color]
+                          major-grid-color grid-color
+                          rrd cdefs defs]
                    :or {width 900
                         height 200
                         title "RRD Graph"
@@ -130,17 +131,24 @@
       (.setShowSignature false)
       (.setNoLegend false))
 
-    (doseq [[type a b c d] data]
-      (case type
-        :def (.datasource rrdgdef a b c d)
-        :cdef (.datasource rrdgdef a b)))
+    (println defs)
+    (println cdefs)
+
+
+    (doseq
+        [{:keys [label datapoint func]} defs]
+      (.datasource rrdgdef label rrd datapoint func))
+
+    (doseq
+        [{:keys [label rpn]} cdefs]
+      (.datasource rrdgdef label rpn))
 
     (doall
      (for [{[ident rrdfile datasource consfunc] :datasource
             [type rgb desc] :chart}
            draw]
        (do
-         ;(.datasource rrdgdef ident rrdfile (name datasource) consfunc)
+                                        ;(.datasource rrdgdef ident rrdfile (name datasource) consfunc)
          (case type
            :area (.area rrdgdef (name desc) (apply color rgb) (name desc))
            :stack (.stack rrdgdef (name desc) (apply color rgb) (name desc))
