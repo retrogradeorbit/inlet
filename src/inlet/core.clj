@@ -132,8 +132,12 @@
 
     :draw
     [
-     [:area [0xEC 0xD7 0x48 0x30] :free]
-     [:stack [0xff 0x00 0x00 0x30] :used]]}})
+     {:type :area
+      :color [0xEC 0xD7 0x48 0x30]
+      :label :free}
+     {:type :stack
+      :color [0xff 0x00 0x00 0x30]
+      :label :used}]}})
 
 (defn build-graph-series
   [title output-base drawset]
