@@ -84,8 +84,8 @@
 
 (defn make-graph [{:keys [width height filename start end
                           title vertical-label draw data format
-                          back-make-color canvas-make-color
-                          major-grid-make-color grid-make-color
+                          back-color canvas-color
+                          major-grid-color grid-color
                           rrd cdefs defs]
                    :or {width 900
                         height 200
@@ -94,10 +94,10 @@
                         format "png"
                         draw []
                         data []
-                        back-make-color [0xffffff]
-                        canvas-make-color [0xfff8f8]
-                        major-grid-make-color [0x500000]
-                        grid-make-color [0xa0a0a0]
+                        back-color [0xffffff]
+                        canvas-color [0xfff8f8]
+                        major-grid-color [0x500000]
+                        grid-color [0xa0a0a0]
                         }}]
   (let [rrdgdef (RrdGraphDef.)]
     (doto rrdgdef
@@ -110,20 +110,20 @@
       (.setVerticalLabel vertical-label)
 
       ;; hide bevel
-      (.setColor RrdGraphConstants/COLOR_SHADEA (apply make-color back-make-color))
-      (.setColor RrdGraphConstants/COLOR_SHADEB (apply make-color back-make-color))
+      (.setColor RrdGraphConstants/COLOR_SHADEA (apply make-color back-color))
+      (.setColor RrdGraphConstants/COLOR_SHADEB (apply make-color back-color))
 
       ;; background frame
-      (.setColor RrdGraphConstants/COLOR_BACK (apply make-color back-make-color))
+      (.setColor RrdGraphConstants/COLOR_BACK (apply make-color back-color))
 
       ;; graph background
-      (.setColor RrdGraphConstants/COLOR_CANVAS (apply make-color canvas-make-color))
+      (.setColor RrdGraphConstants/COLOR_CANVAS (apply make-color canvas-color))
 
       ;; major grid
-      (.setColor RrdGraphConstants/COLOR_MGRID (apply make-color major-grid-make-color))
+      (.setColor RrdGraphConstants/COLOR_MGRID (apply make-color major-grid-color))
 
       ;; frame border and minor grid
-      (.setColor RrdGraphConstants/COLOR_GRID (apply make-color grid-make-color))
+      (.setColor RrdGraphConstants/COLOR_GRID (apply make-color grid-color))
 
       ;; minor grid
       (.setNoMinorGrid true)
