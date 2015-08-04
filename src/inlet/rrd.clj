@@ -140,11 +140,16 @@
       (.datasource rrdgdef label rpn))
 
     (doseq
-        [{:keys [type color label]} draw]
+        [{:keys [type color label legend]} draw]
       (case type
-        :area (.area rrdgdef (name label) (apply make-color color) (name label))
-        :stack (.stack rrdgdef (name label) (apply make-color color) (name label))
-        :line (.line rrdgdef (name label) (apply make-color color) (name label))))
+        :area
+        (.area rrdgdef (name label) (apply make-color color) (or legend (name label)))
+
+        :stack
+        (.stack rrdgdef (name label) (apply make-color color) (or legend (name label)))
+
+        :line
+        (.line rrdgdef (name label) (apply make-color color) (or legend (name label)))))
 
     (.setImageFormat rrdgdef format)
     (RrdGraph. rrdgdef)))
