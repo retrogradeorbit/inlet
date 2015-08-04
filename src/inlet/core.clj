@@ -134,10 +134,13 @@
     [
      {:type :area
       :color [0xEC 0xD7 0x48 0x30]
-      :label :free}
+      :label :free
+      :legend "Free Memory"
+      }
      {:type :stack
       :color [0xff 0x00 0x00 0x30]
-      :label :used}]}})
+      :label :used
+      :legend "Used Memory"}]}})
 
 (defn build-graph-series
   [title output-base drawset]
