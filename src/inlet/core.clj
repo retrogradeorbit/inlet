@@ -99,15 +99,27 @@
    {:step 1
     :canvas-color [0xffffff]
     :major-grid-color [0x00 0x00 0x00 0x20]
-    :data
-    [
-     [:def "INPUT" "/tmp/rrd/knives/iptables:1.rrd" "INPUT" rrd/AVERAGE]
-     [:def "OUTPUT" "/tmp/rrd/knives/iptables:1.rrd" "OUTPUT" rrd/AVERAGE]
-     ]
-    :draw
-    [
-     [:area [0x70 0x00 0x00] :INPUT]
-     [:area [0xd0 0x60 0x60] :OUTPUT]]}
+
+    :defs [
+           {:label :input
+            :datapoint :INPUT
+            :func rrd/AVERAGE}
+           {:label :output
+            :datapoint :OUTPUT
+            :func rrd/AVERAGE}
+           ]
+
+    :cdefs []
+
+    :draw [
+           {:type :area
+            :color [0x700 0x00 0x00]
+            :label :input
+            :legend "Inbound"}
+           {:type :area
+            :color [0xd0 0x60 0x60]
+            :label :output
+            :legend "Outbound"}]}
 
    :meminfo
    {
