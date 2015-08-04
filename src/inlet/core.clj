@@ -110,22 +110,24 @@
      [:area [0xd0 0x60 0x60] :OUTPUT]]}
 
    :meminfo
-   {:step 20
+   {
+    :step 20
     :canvas-color [0xffffff]
     :major-grid-color [0x00 0x00 0x00 0x20]
+
     :defs
     [
-     {:label "free"
-      :datapoint "MemFree"
+     {:label :free
+      :datapoint :MemFree
       :func rrd/AVERAGE}
-     {:label "total"
-      :datapoint "MemTotal"
+     {:label :total
+      :datapoint :MemTotal
       :func rrd/AVERAGE}
      ]
 
     :cdefs
     [
-     {:label "used"
+     {:label :used
       :rpn "total,free,-"
       }
      ]

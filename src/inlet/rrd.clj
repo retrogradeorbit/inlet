@@ -133,11 +133,11 @@
 
     (doseq
         [{:keys [label datapoint func]} defs]
-      (.datasource rrdgdef label rrd datapoint func))
+      (.datasource rrdgdef (name label) rrd (name datapoint) func))
 
     (doseq
         [{:keys [label rpn]} cdefs]
-      (.datasource rrdgdef label rpn))
+      (.datasource rrdgdef (name label) rpn))
 
     (doseq
         [{:keys [type color label legend]} draw]
