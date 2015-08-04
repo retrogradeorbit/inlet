@@ -3,12 +3,11 @@ Receive data and RRD graph it.
 
 ## Overview
 
-This is intended as a quick, low config backend for croak. Who knows
-what it will become.
+Inlet is a time-data graphing webserver. It is intended as a low-config clojure backend for croak.
 
-It accepts and serialised time stamp data and does its best to work out if it's new or not, and where it belongs and how it should be processed. As new data feeds come in, inlet automatically generates appropriate RRD databases for the storage.
+It accepts serialised time-stamped data. It looks at that data to determine how regular the sampling intervals fo the data point is. As new data feeds come in, inlet automatically generates appropriate RRD databases for the storage.
 
-Then, at regular intervals, it rebuilds the RRD graph images. These graphs can be viewed through a simple HTTP interface. No auth is done at this stage.
+Then there is a web frontend that allows a user to see graphs of the RRD data. No auth is done at this stage.
 
 ## Running
 
@@ -17,3 +16,9 @@ Run the server with
 ```bash
 $ lein run
 ```
+
+## Quickstart
+
+ - Run the server on localhost.
+ - Run croak on loaclhost. croak by default sends to a localhost inlet.
+ - Point your browser at http://localhost:5000/hostname/iptables (but replace hostname with your computers hostname)
