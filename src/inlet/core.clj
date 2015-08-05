@@ -212,17 +212,17 @@
         :headers {"Content-Type" "image/png"}
         :body (io/file "/tmp/meminfo-hour.png")} )
   (GET "/meminfo" [] "
-<img id='ten-mins' src='/image?duration=600&height=220&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+10+Minutes'/>
-<img id='hour' src='/image?duration=3600&height=140&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Hour'/>
-<img id='day' src='/image?duration=86400&height=100&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Day'/>
-<img src='/image?duration=604800&height=85&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Week'/>
-<img src='/image?duration=2419200&height=70&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Month'/>
-<img src='/image?duration=31449600&height=55&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Year'/>
+<img id='ten-mins' src='/image?duration=600&height=220&db=meminfo&step=20&title=Previous+10+Minutes'/>
+<img id='hour' src='/image?duration=3600&height=140&db=meminfo&step=20&title=Previous+Hour'/>
+<img id='day' src='/image?duration=86400&height=100&db=meminfo&step=20&title=Previous+Day'/>
+<img src='/image?duration=604800&height=85&db=meminfo&step=20&title=Previous+Week'/>
+<img src='/image?duration=2419200&height=70&db=meminfo&step=20&title=Previous+Month'/>
+<img src='/image?duration=31449600&height=55&db=meminfo&step=20&title=Previous+Year'/>
 <script type='text/javascript'>
 function update() {
-  document.getElementById('day').src = '/image?duration=86400&height=100&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Day&time=' + new Date();
-  document.getElementById('hour').src = '/image?duration=3600&height=140&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+Hour&time=' + new Date();
-  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=meminfo&step=20&data2=MemFree&data=MemTotal&title=Previous+10+Minutes&time=' + new Date();
+  document.getElementById('day').src = '/image?duration=86400&height=100&db=meminfo&step=20&title=Previous+Day&time=' + new Date();
+  document.getElementById('hour').src = '/image?duration=3600&height=140&db=meminfo&step=20&title=Previous+Hour&time=' + new Date();
+  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=meminfo&step=20&title=Previous+10+Minutes&time=' + new Date();
 }
 
 window.setInterval(update, 5000);
@@ -232,17 +232,17 @@ window.setInterval(update, 5000);
 ")
 
   (GET "/iptables" [] "
-<img src='/image?duration=31449600&height=50&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Year'/>
-<img src='/image?duration=2419200&height=75&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Month'/>
-<img src='/image?duration=604800&height=100&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Week'/>
-<img id='day' src='/image?duration=86400&height=140&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Day'/>
-<img id='hour' src='/image?duration=3600&height=180&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Hour'/>
-<img id='ten-mins' src='/image?duration=600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+10+Minutes'/>
+<img src='/image?duration=31449600&height=50&db=iptables&step=1&title=Previous+Year'/>
+<img src='/image?duration=2419200&height=75&db=iptables&step=1&title=Previous+Month'/>
+<img src='/image?duration=604800&height=100&db=iptables&step=1&title=Previous+Week'/>
+<img id='day' src='/image?duration=86400&height=140&db=iptables&step=1&title=Previous+Day'/>
+<img id='hour' src='/image?duration=3600&height=180&db=iptables&step=1&title=Previous+Hour'/>
+<img id='ten-mins' src='/image?duration=600&height=220&db=iptables&step=1&title=Previous+10+Minutes'/>
 <script type='text/javascript'>
 function update() {
-  document.getElementById('day').src = '/image?duration=86400&height=180&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Day&time=' + new Date();
-  document.getElementById('hour').src = '/image?duration=3600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+Hour&time=' + new Date();
-  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=iptables&step=1&data2=OUTPUT&data=INPUT&title=Previous+10+Minutes&time=' + new Date();
+  document.getElementById('day').src = '/image?duration=86400&height=180&db=iptables&step=1&title=Previous+Day&time=' + new Date();
+  document.getElementById('hour').src = '/image?duration=3600&height=220&db=iptables&step=1&title=Previous+Hour&time=' + new Date();
+  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=iptables&step=1&title=Previous+10+Minutes&time=' + new Date();
 }
 
 window.setInterval(update, 5000);
