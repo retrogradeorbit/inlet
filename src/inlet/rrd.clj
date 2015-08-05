@@ -27,8 +27,6 @@
 (def DERIVE org.rrd4j.DsType/DERIVE)
 (def ABSOLUTE org.rrd4j.DsType/ABSOLUTE)
 
-
-
 (defn load-db [filename]
   (RrdDb. (str filename)))
 
