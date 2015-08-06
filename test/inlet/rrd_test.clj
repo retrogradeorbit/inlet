@@ -69,11 +69,28 @@
               :filename graph-file
               :start 140000
               :end 140010
-              :draw
-              [
-               {:datasource ["input" rrd-file :INPUT AVERAGE]
-                :chart [:area 0xd06060 "Firewall Input Chain"]}
-               {:datasource ["output" rrd-file :OUTPUT AVERAGE]
-                :chart [:area 0x700000 "Firewall Output Chain"]}]})]
+
+              :defs [
+                     {:label :input
+                      :datapoint :INPUT
+                      :func AVERAGE}
+                     {:label :output
+                      :datapoint :OUTPUT
+                      :func AVERAGE}
+                     ]
+
+              :cdefs []
+
+              :draw [
+                     {:type :area
+                      :color [0x70 0x00 0x00]
+                      :label :input
+                      :legend "Inbound"}
+                     {:type :area
+                      :color [0xd0 0x60 0x60]
+                      :label :output
+                      :legend "Outbound"}]
+
+              })]
         (is (.exists (io/file graph-file)))
         (is (> (.length (io/file graph-file)) 3000))))))
