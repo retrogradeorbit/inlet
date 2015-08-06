@@ -9,6 +9,16 @@
          (make-filename "hostname" "iptables" 1)
          "/tmp/rrd/hostname/iptables:1.rrd"))))
 
+(deftest test-make-folders
+  (testing "make-folders"
+    (is (make-containing-folders "/tmp/a/b/c/d/e"))
+    (is (-> "/tmp/a/b/c/d"
+            io/file
+            .exists))
+    (is (-> "/tmp/a/b/c/d"
+            io/file
+            io/delete-file))))
+
 (deftest test-make-rrd
   (testing "make-rrd"
     (let [rrd-file "/tmp/test.rrd"
