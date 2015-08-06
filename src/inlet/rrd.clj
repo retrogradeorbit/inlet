@@ -156,8 +156,16 @@
   {:iptables [COUNTER 600 0 2200000000]
    :meminfo [GAUGE 600 0 Double/NaN]})
 
+(defn make-containing-folders [filename]
+  (-> filename
+      io/file
+      .getParent
+      io/file
+      .mkdirs))
+
 (defn make-new-rrd [file type earliest labels step]
   (println "MAKE-NEW-RRD" file type earliest labels step)
+  (make-containing-folders file)
   (let [datasources
         (into {} (for [n labels] [(name n) (layout (keyword type))]))]
     (println "DataSources" datasources)
