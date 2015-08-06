@@ -113,7 +113,7 @@
 
     :draw [
            {:type :area
-            :color [0x700 0x00 0x00]
+            :color [0x70 0x00 0x00]
             :label :input
             :legend "Inbound"}
            {:type :area
