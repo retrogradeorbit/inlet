@@ -62,13 +62,14 @@
       (is (= '(1.0 4.0) (fetch-data rrd AVERAGE :INPUT 140002 140003)))
       (is (= '(2.0 2.0) (fetch-data rrd AVERAGE :OUTPUT 140002 140003)))
 
-      (let [graph-file "/tmp/graph.png"
+      (let [graph-file "-"
             graph
             (make-graph
              {:title "Test Graph"
               :filename graph-file
               :start 140000
               :end 140010
+              :rrd rrd-file
 
               :defs [
                      {:label :input
@@ -91,6 +92,8 @@
                       :label :output
                       :legend "Outbound"}]
 
-              })]
-        (is (.exists (io/file graph-file)))
-        (is (> (.length (io/file graph-file)) 3000))))))
+              })
+
+            info (.getRrdGraphInfo graph)
+            size (-> info .getByteCount)]
+        (is (> size 3000))))))
