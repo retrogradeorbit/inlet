@@ -26,17 +26,21 @@ $ lein test
 ## Quickstart
 
  - Run the server on localhost.
+
    ```
    inlet$ lein run -m inlet.core
    ```
+
  - Run croak on loaclhost. croak by default sends to a localhost inlet.
+
    ```
    croak$ lein run -- -c test-config.clj
    ```
- - Point your browser at http://localhost:5000/<hostname>/iptables
- - Point your browser at http://localhost:5000/<hostname>/meminfo
 
-   * repace <hostname> with the local machines hostname.
+ - Point your browser at http://localhost:5000/hostname/iptables
+ - Point your browser at http://localhost:5000/hostname/meminfo
+
+   .. replace hostname with the local machines hostname.
 
 ## Configuration
 
