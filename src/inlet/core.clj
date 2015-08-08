@@ -149,14 +149,14 @@
     :draw
     [
      {:type :area
-      :color [0xEC 0xD7 0x48 0x30]
+      :color [0xff 0x00 0x00 0x80]
+      :label :used
+      :legend "Used Memory"}
+     {:type :stack
+      :color [0xEC 0xD7 0x48 0x80]
       :label :free
       :legend "Free Memory"
-      }
-     {:type :stack
-      :color [0xff 0x00 0x00 0x30]
-      :label :used
-      :legend "Used Memory"}]}})
+      }]}})
 
 (defn build-graph-series
   [title output-base drawset]
