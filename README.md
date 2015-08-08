@@ -36,17 +36,17 @@ Configuration is a hash map with datasource labels as the keys
 ```clojure
 {:iptables {:step 1
             :canvas-color [0xffffff]
-	    :major-grid-color [0x00 0x00 0x00 0x20]
+            :major-grid-color [0x00 0x00 0x00 0x20]
 
-	    :defs
-	    [
+            :defs
+            [
              {:label :input
               :datapoint :INPUT
               :func rrd/AVERAGE}
              {:label :output
               :datapoint :OUTPUT
               :func rrd/AVERAGE}
-	    ]
+            ]
 
             :cdefs []
 
