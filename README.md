@@ -17,8 +17,53 @@ Run the server with
 $ lein run
 ```
 
+Run the test suite
+
+```bash
+$ lein test
+```
+
 ## Quickstart
 
  - Run the server on localhost.
  - Run croak on loaclhost. croak by default sends to a localhost inlet.
  - Point your browser at http://localhost:5000/hostname/iptables (but replace hostname with your computers hostname)
+
+## Configuration
+
+Configuration is a hash map with datasource labels as the keys
+
+```clojure
+{:iptables {:step 1
+            :canvas-color [0xffffff]
+	    :major-grid-color [0x00 0x00 0x00 0x20]
+
+	    :defs
+	    [
+             {:label :input
+              :datapoint :INPUT
+              :func rrd/AVERAGE}
+             {:label :output
+              :datapoint :OUTPUT
+              :func rrd/AVERAGE}
+	    ]
+
+            :cdefs []
+
+            :draw [
+             {:type :area
+              :color [0x70 0x00 0x00]
+              :label :input
+              :legend "Inbound"}
+             {:type :area
+              :color [0xd0 0x60 0x60]
+              :label :output
+              :legend "Outbound"}]}
+}
+```
+
+## License
+
+Copyright (c) 2015 Crispin Wellington
+
+Distributed under the Eclipse Public License version 1.0
