@@ -39,13 +39,13 @@ Configuration is a hash map with datasource labels as the keys
 	    :step 1
 
 	    ;; graph look
-            :canvas-color [0xffffff]
-            :major-grid-color [0x00 0x00 0x00 0x20]
+	    :canvas-color [0xffffff]
+	    :major-grid-color [0x00 0x00 0x00 0x20]
 
 	    ;; define the used datapoints from the rrd
-            :defs
-            [
-             {
+	    :defs
+	    [
+	     {
 	     ;; what we'll call it in the graph
 	     :label :input
 
@@ -54,24 +54,24 @@ Configuration is a hash map with datasource labels as the keys
 
 	     ;; the rrd consolidation function
 	     :func rrd/AVERAGE}
-             {:label :output
-              :datapoint :OUTPUT
-              :func rrd/AVERAGE}
-            ]
+	     {:label :output
+	      :datapoint :OUTPUT
+	      :func rrd/AVERAGE}
+	    ]
 
 	    ;; define calculated graph data sets
-            :cdefs []
+	    :cdefs []
 
 	    ;; the actual graph layout
-            :draw [
-             {:type :area
-              :color [0x70 0x00 0x00]
-              :label :input
-              :legend "Inbound"}
-             {:type :area
-              :color [0xd0 0x60 0x60]
-              :label :output
-              :legend "Outbound"}]}
+	    :draw [
+	     {:type :area
+	      :color [0x70 0x00 0x00]
+	      :label :input
+	      :legend "Inbound"}
+	     {:type :area
+	      :color [0xd0 0x60 0x60]
+	      :label :output
+	      :legend "Outbound"}]}
 }
 ```
 
