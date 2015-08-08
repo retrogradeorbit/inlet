@@ -84,6 +84,7 @@
                           title vertical-label draw data format
                           back-color canvas-color
                           major-grid-color grid-color
+                          min-value max-value
                           rrd cdefs defs]
                    :or {width 900
                         height 200
@@ -128,6 +129,9 @@
       (.setAntiAliasing true)
       (.setShowSignature false)
       (.setNoLegend false))
+
+    (when min-value (.setMinValue rrdgdef min-value))
+    (when max-value (.setMaxValue rrdgdef max-value))
 
     (doseq
         [{:keys [label datapoint func]} defs]
