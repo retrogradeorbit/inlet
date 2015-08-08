@@ -97,8 +97,8 @@
 (def config
   {:iptables
    {:step 1
-    :canvas-color [0xffffff]
-    :major-grid-color [0x00 0x00 0x00 0x20]
+    :args {:canvas-color [0xffffff]
+           :major-grid-color [0x00 0x00 0x00 0x20]}
 
     :defs [
            {:label :input
@@ -124,8 +124,10 @@
    :meminfo
    {
     :step 20
-    :canvas-color [0xffffff]
-    :major-grid-color [0x00 0x00 0x00 0x20]
+
+    :args {:canvas-color [0xffffff]
+           :major-grid-color [0x00 0x00 0x00 0x20]
+           :min-value 0}
 
     :defs
     [
@@ -176,25 +178,25 @@
                            title "This is the default title"
                            }
                       :as params} :params}]
-  (let [{:keys [step draw data canvas-color major-grid-color
+  (let [{:keys [step draw data args
                 cdefs defs]} (config (keyword db))
         present (now)
         graph (rrd/make-graph
-               {:title title
+               (into {:title title
 
-                ;; create graph in memory
-                ;; http://rrd4j.googlecode.com/svn/trunk/javadoc/reference/org/rrd4j/graph/RrdGraphDef.html#setFilename(java.lang.String)
-                :filename "-"
+                      ;; create graph in memory
+                      ;; http://rrd4j.googlecode.com/svn/trunk/javadoc/reference/org/rrd4j/graph/RrdGraphDef.html#setFilename(java.lang.String)
+                      :filename "-"
 
-                :height (Integer. height)
-                :start (- present (Integer. duration))
-                :end present
-                :canvas-color canvas-color
-                :major-grid-color major-grid-color
-                :rrd (rrd/make-filename host db step)
-                :cdefs cdefs
-                :defs defs
-                :draw draw})
+                      :height (Integer. height)
+                      :start (- present (Integer. duration))
+                      :end present
+
+                      :rrd (rrd/make-filename host db step)
+                      :cdefs cdefs
+                      :defs defs
+                      :draw draw}
+                     args))
         info (.getRrdGraphInfo graph)]
     {:status 200
      :headers {"Content-Type" "image/png"}
