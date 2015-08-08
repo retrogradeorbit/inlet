@@ -14,7 +14,7 @@ Then there is a web frontend that allows a user to see graphs of the RRD data. N
 Run the server with
 
 ```bash
-$ lein run
+$ lein run -m inlet.core
 ```
 
 Run the test suite
@@ -26,8 +26,17 @@ $ lein test
 ## Quickstart
 
  - Run the server on localhost.
+   ```bash
+   inlet$ lein run -m inlet.core
+   ```
  - Run croak on loaclhost. croak by default sends to a localhost inlet.
- - Point your browser at http://localhost:5000/hostname/iptables (but replace hostname with your computers hostname)
+   ```bash
+   croak$ lein run -- -c test-config.clj
+   ```
+ - Point your browser at http://localhost:5000/<hostname>/iptables
+ - Point your browser at http://localhost:5000/<hostname>/meminfo
+
+   * repace <hostname> with the local machines hostname.
 
 ## Configuration
 
