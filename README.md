@@ -34,22 +34,35 @@ $ lein test
 Configuration is a hash map with datasource labels as the keys
 
 ```clojure
-{:iptables {:step 1
+{:iptables {
+	    ;; data timestamp increments
+	    :step 1
+
+	    ;; graph look
             :canvas-color [0xffffff]
             :major-grid-color [0x00 0x00 0x00 0x20]
 
+	    ;; define the used datapoints from the rrd
             :defs
             [
-             {:label :input
-              :datapoint :INPUT
-              :func rrd/AVERAGE}
+             {
+	     ;; what we'll call it in the graph
+	     :label :input
+
+	     ;; its rrd storage name
+	     :datapoint :INPUT
+
+	     ;; the rrd consolidation function
+	     :func rrd/AVERAGE}
              {:label :output
               :datapoint :OUTPUT
               :func rrd/AVERAGE}
             ]
 
+	    ;; define calculated graph data sets
             :cdefs []
 
+	    ;; the actual graph layout
             :draw [
              {:type :area
               :color [0x70 0x00 0x00]
