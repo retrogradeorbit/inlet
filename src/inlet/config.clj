@@ -3,7 +3,15 @@
 
 (def config
   {:iptables
-   {:step 1
+   {
+    :rrd {:step 1
+          :layout [rrd/COUNTER 600 0 2200000000]
+          :stores [[rrd/AVERAGE 0.5 1 86400]
+                   [rrd/AVERAGE 0.5 60 10080]
+                   [rrd/AVERAGE 0.5 3600 8736]
+                   [rrd/AVERAGE 0.5 86400 7280]
+                   [rrd/MAX 0.5 1 600]]}
+
     :args {:canvas-color [0xffffff]
            :major-grid-color [0x00 0x00 0x00 0x20]}
 
@@ -30,7 +38,13 @@
 
    :meminfo
    {
-    :step 20
+    :rrd {:step 20
+          :meminfo [rrd/GAUGE 600 0 Double/NaN]
+          :stores [[rrd/AVERAGE 0.5 1 86400]
+                   [rrd/AVERAGE 0.5 60 10080]
+                   [rrd/AVERAGE 0.5 3600 8736]
+                   [rrd/AVERAGE 0.5 86400 7280]
+                   [rrd/MAX 0.5 1 600]]}
 
     :args {:canvas-color [0xffffff]
            :major-grid-color [0x00 0x00 0x00 0x20]
