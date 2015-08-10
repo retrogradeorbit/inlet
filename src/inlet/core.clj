@@ -7,6 +7,7 @@
             [clojure.java.io :as io]
             [inlet.rrd :as rrd]
             [inlet.data :as data]
+            [inlet.config :refer [config]]
             [inlet.graph :as graph]
             [inlet.storage :as storage]))
 
@@ -58,7 +59,7 @@
                                              separated sort
                                              first second
                                              keys)
-                                         step
+                                         (-> label keyword config :rrd)
                                          (first (sorted-keys label)))]))
         ]
     ;; write the long-set data out to rrd

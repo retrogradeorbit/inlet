@@ -13,8 +13,9 @@
                            title "This is the default title"
                            }
                       :as params} :params}]
-  (let [{:keys [step draw data args
-                cdefs defs]} (config (keyword db))
+  (let [{:keys [rrd draw data args
+                cdefs defs]} (-> db keyword config)
+                step (:step rrd)
         present (now)
         graph (rrd/make-graph
                (into {:title title
