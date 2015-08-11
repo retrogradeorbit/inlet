@@ -116,5 +116,5 @@ window.setInterval(update, 5000);
 (defn -main []
   (let [{:keys [ip port rrd-path]}
         (config/find-and-load)]
-    (println (str "starting server on port " port))
-    (run-server app {:port 5000})))
+    (println (str "starting server on " ip ":" port))
+    (run-server app {:port port :ip ip})))
