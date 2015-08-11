@@ -81,13 +81,18 @@
       }]}})
 
 (def config-search-path
-  ["~/.inlet.clj" "~/.inlet/inlet.clj" "/etc/inlet.clj" "inlet.clj" "."])
+  ["~/.inlet.clj" "~/.inlet/inlet.clj" "/etc/inlet.clj" "inlet.clj"])
 
 (defn find-first [paths]
   (->> paths
        (map #(when (-> % io/file .exists) %))
        (remove nil?)
        first))
+
+;(def filename "test-config.clj")
+
+(defn load-config [filename]
+  (-> filename slurp read-string))
 
 (comment
 
