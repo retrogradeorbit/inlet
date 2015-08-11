@@ -1,5 +1,6 @@
 (ns inlet.config
-  (:require [inlet.rrd :as rrd]))
+  (:require [inlet.rrd :as rrd]
+            [clojure.java.io :as io]))
 
 (def config
   {:iptables
@@ -78,3 +79,19 @@
       :label :free
       :legend "Free Memory"
       }]}})
+
+(def config-search-path
+  ["~/.inlet.clj" "~/.inlet/inlet.clj" "/etc/inlet.clj" "inlet.clj" "."])
+
+(defn find-first [paths]
+  (->> paths
+       (map #(when (-> % io/file .exists) %))
+       (remove nil?)
+       first))
+
+(comment
+
+  (find-first config-search-path)
+
+
+)
