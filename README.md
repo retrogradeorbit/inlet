@@ -47,45 +47,82 @@ $ lein test
 Configuration is a hash map with datasource labels as the keys
 
 ```clojure
-{:iptables {
-	    ;; data timestamp increments
-	    :step 1
+{:iptables
+   {
+    :rrd {:step 1
+          :layout [rrd/COUNTER 600 0 2200000000]
+          :stores [[rrd/AVERAGE 0.5 1 86400]
+                   [rrd/AVERAGE 0.5 60 10080]
+                   [rrd/AVERAGE 0.5 3600 8736]
+                   [rrd/AVERAGE 0.5 86400 7280]
+                   [rrd/MAX 0.5 1 600]]}
 
-	    ;; graph look
-	    :canvas-color [0xffffff]
-	    :major-grid-color [0x00 0x00 0x00 0x20]
+    :args {:canvas-color [0xffffff]
+           :major-grid-color [0x00 0x00 0x00 0x20]}
 
-	    ;; define the used datapoints from the rrd
-	    :defs
-	    [
-	     {
-	     ;; what we'll call it in the graph
-	     :label :input
+    :defs [
+           {:label :input
+            :datapoint :INPUT
+            :func rrd/AVERAGE}
+           {:label :output
+            :datapoint :OUTPUT
+            :func rrd/AVERAGE}
+           ]
 
-	     ;; its rrd storage name
-	     :datapoint :INPUT
+    :cdefs []
 
-	     ;; the rrd consolidation function
-	     :func rrd/AVERAGE}
-	     {:label :output
-	      :datapoint :OUTPUT
-	      :func rrd/AVERAGE}
-	    ]
+    :draw [
+           {:type :area
+            :color [0x70 0x00 0x00]
+            :label :input
+            :legend "Inbound"}
+           {:type :area
+            :color [0xd0 0x60 0x60]
+            :label :output
+            :legend "Outbound"}]}
 
-	    ;; define calculated graph data sets
-	    :cdefs []
+   :meminfo
+   {
+    :rrd {:step 20
+          :meminfo [rrd/GAUGE 600 0 Double/NaN]
+          :stores [[rrd/AVERAGE 0.5 1 86400]
+                   [rrd/AVERAGE 0.5 60 10080]
+                   [rrd/AVERAGE 0.5 3600 8736]
+                   [rrd/AVERAGE 0.5 86400 7280]
+                   [rrd/MAX 0.5 1 600]]}
 
-	    ;; the actual graph layout
-	    :draw [
-	     {:type :area
-	      :color [0x70 0x00 0x00]
-	      :label :input
-	      :legend "Inbound"}
-	     {:type :area
-	      :color [0xd0 0x60 0x60]
-	      :label :output
-	      :legend "Outbound"}]}
-}
+    :args {:canvas-color [0xffffff]
+           :major-grid-color [0x00 0x00 0x00 0x20]
+           :min-value 0}
+
+    :defs
+    [
+     {:label :free
+      :datapoint :MemFree
+      :func rrd/AVERAGE}
+     {:label :total
+      :datapoint :MemTotal
+      :func rrd/AVERAGE}
+     ]
+
+    :cdefs
+    [
+     {:label :used
+      :rpn "total,free,-"
+      }
+     ]
+
+    :draw
+    [
+     {:type :area
+      :color [0xff 0x00 0x00 0x80]
+      :label :used
+      :legend "Used Memory"}
+     {:type :stack
+      :color [0xEC 0xD7 0x48 0x80]
+      :label :free
+      :legend "Free Memory"
+      }]}}
 ```
 
 ## License
