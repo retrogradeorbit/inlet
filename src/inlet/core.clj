@@ -7,7 +7,7 @@
             [clojure.java.io :as io]
             [inlet.rrd :as rrd]
             [inlet.data :as data]
-            [inlet.config :refer [config]]
+            [inlet.config :as config]
             [inlet.graph :as graph]
             [inlet.storage :as storage]))
 
@@ -59,7 +59,7 @@
                                              separated sort
                                              first second
                                              keys)
-                                         (-> label keyword config :rrd)
+                                         (-> label keyword config/config :rrd)
                                          (first (sorted-keys label)))]))
         ]
     ;; write the long-set data out to rrd
@@ -114,5 +114,7 @@ window.setInterval(update, 5000);
              wrap-params))
 
 (defn -main []
-  (println "starting server on port 5000")
-  (run-server app {:port 5000}))
+  (let [{:keys [ip port rrd-path]}
+        (config/find-and-load)]
+    (println (str "starting server on port " port))
+    (run-server app {:port 5000})))

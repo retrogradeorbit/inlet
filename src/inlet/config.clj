@@ -80,6 +80,13 @@
       :legend "Free Memory"
       }]}})
 
+(def default-config
+  {:ip "0.0.0.0"
+   :port 5000
+
+   :rrd-path "/tmp/inlet"
+   })
+
 (def config-search-path
   ["~/.inlet.clj" "~/.inlet/inlet.clj" "/etc/inlet.clj" "inlet.clj"])
 
@@ -89,14 +96,13 @@
        (remove nil?)
        first))
 
-;(def filename "test-config.clj")
-
 (defn load-config [filename]
   (-> filename slurp read-string))
 
-(comment
+(def merge-into (partial merge-with into))
 
-  (find-first config-search-path)
-
-
-)
+(defn find-and-load []
+  (let [fname (find-first config-search-path)]
+    (if fname
+      (merge-with into default-config (load-config fname))
+      default-config)))
