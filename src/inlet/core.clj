@@ -9,7 +9,8 @@
             [inlet.data :as data]
             [inlet.config :as config]
             [inlet.graph :as graph]
-            [inlet.storage :as storage]))
+            [inlet.storage :as storage])
+  (:use [hiccup.core]))
 
 (def merge-conj (partial merge-with conj))
 
@@ -85,12 +86,41 @@
     "OK"
     ))
 
+(defn hic [host db]
+  (html [:html [:head]
+         [:body
+          [:img#ten-minutes
+           {:src
+            (str
+             "/image?duration=600&height=220&db="
+             db
+             "&host="
+             host
+             "&step=20&title=Previous+10+Minutes")}]
+
+          [:script]
+          ]]))
+
 (defroutes app-routes
   (GET "/" [] "Hello World")
   (GET "/image" req (graph/image-create req))
   (POST "/data" req (process-data req) )
 
-  (GET "/:host/:db" [host db] (format "
+  (GET "/:host/:db" [host db] (hic host db)))
+
+(def app (-> app-routes
+             wrap-params))
+
+(defn -main []
+  (let [{:keys [ip port rrd-path]}
+        (config/find-and-load)]
+    (println (str "starting server on " ip ":" port))
+    (run-server app {:port port :ip ip})))
+
+
+
+(comment
+                                 "
 <img id='ten-mins' src='/image?duration=600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+10+Minutes'/>
 <img id='hour' src='/image?duration=3600&height=140&db=%2$s&host=%1$s&step=20&title=Previous+Hour'/>
 <img id='day' src='/image?duration=86400&height=100&db=%2$s&host=%1$s&step=20&title=Previous+Day'/>
@@ -107,14 +137,4 @@ window.setInterval(update, 5000);
 
 </script>
 
-"
-                                      host db)))
-
-(def app (-> app-routes
-             wrap-params))
-
-(defn -main []
-  (let [{:keys [ip port rrd-path]}
-        (config/find-and-load)]
-    (println (str "starting server on " ip ":" port))
-    (run-server app {:port port :ip ip})))
+")
