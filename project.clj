@@ -14,4 +14,7 @@
                  [org.rrd4j/rrd4j "2.2.1"]
 
                  ;; encodings
-                 [org.clojure/data.json "0.2.6"]])
+                 [org.clojure/data.json "0.2.6"]]
+  :main inlet.core
+  :aot :all
+)
