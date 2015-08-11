@@ -7,6 +7,9 @@
                  [compojure "1.1.8"]
                  [http-kit "2.1.16"]
 
+                 ;; for marking up our interface
+                 [hiccup "1.0.5"]
+
                  ;; file system stuff
                  [me.raynes/fs "1.4.6"]
 
