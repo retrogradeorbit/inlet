@@ -89,19 +89,37 @@
 (defn hic [host db]
   (html [:html [:head]
          [:body
-          (for [dur [600 3600 86400 604800 2419200]]
+          (for [
+                {:keys [ident duration title]}
+                [{:ident "ten-mins" :duration 600 :title "Previous+10+Minutes"}
+                 {:ident "hour" :duration 3600 :title "Previous+Hour"}
+                 {:ident "day" :duration 86400 :title "Previous+Day"}
+                 {:ident "week" :duration 604800 :title "Previous+Week"}
+                 {:ident "month" :duration 2419200 :title "Previous+Month"}
+                 {:ident "year" :duration 31449600 :title "Previous+Year"}]]
             [:img#ten-minutes
-             {:src
+             {
+              :id ident
+              :src
               (str
                "/image?duration="
-               dur
+               duration
                "&height=220&db="
                db
                "&host="
                host
-               "&step=20&title=Previous+10+Minutes")}])
+               "&step=20&title="
+               title)}])
 
-          [:script]
+          [:script
+           (format  "function update() {
+  document.getElementById('hour').src = '/image?duration=3600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+Hour&time=' + new Date();
+  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+10+Minutes&time=' + new Date();
+}
+
+window.setInterval(update, 5000);
+" host db)
+           ]
           ]]))
 
 (defroutes app-routes
