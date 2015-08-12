@@ -89,14 +89,17 @@
 (defn hic [host db]
   (html [:html [:head]
          [:body
-          [:img#ten-minutes
-           {:src
-            (str
-             "/image?duration=600&height=220&db="
-             db
-             "&host="
-             host
-             "&step=20&title=Previous+10+Minutes")}]
+          (for [dur [600 3600 86400 604800 2419200]]
+            [:img#ten-minutes
+             {:src
+              (str
+               "/image?duration="
+               dur
+               "&height=220&db="
+               db
+               "&host="
+               host
+               "&step=20&title=Previous+10+Minutes")}])
 
           [:script]
           ]]))
