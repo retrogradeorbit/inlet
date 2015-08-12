@@ -137,25 +137,3 @@ window.setInterval(update, 5000);
         (config/find-and-load)]
     (println (str "starting server on " ip ":" port))
     (run-server app {:port port :ip ip})))
-
-
-
-(comment
-                                 "
-<img id='ten-mins' src='/image?duration=600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+10+Minutes'/>
-<img id='hour' src='/image?duration=3600&height=140&db=%2$s&host=%1$s&step=20&title=Previous+Hour'/>
-<img id='day' src='/image?duration=86400&height=100&db=%2$s&host=%1$s&step=20&title=Previous+Day'/>
-<img src='/image?duration=604800&height=85&db=%2$s&host=%1$s&step=20&title=Previous+Week'/>
-<img src='/image?duration=2419200&height=70&db=%2$s&host=%1$s&step=20&title=Previous+Month'/>
-<img src='/image?duration=31449600&height=55&db=%2$s&host=%1$s&step=20&title=Previous+Year'/>
-<script type='text/javascript'>
-function update() {
-  document.getElementById('hour').src = '/image?duration=3600&height=140&db=%2$s&host=%1$s&step=20&title=Previous+Hour&time=' + new Date();
-  document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+10+Minutes&time=' + new Date();
-}
-
-window.setInterval(update, 5000);
-
-</script>
-
-")
