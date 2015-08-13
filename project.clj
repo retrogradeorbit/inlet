@@ -10,9 +10,6 @@
                  ;; for marking up our interface
                  [hiccup "1.0.5"]
 
-                 ;; file system stuff
-                 [me.raynes/fs "1.4.6"]
-
                  ;; use rrd4j directly
                  [org.rrd4j/rrd4j "2.2.1"]
 
