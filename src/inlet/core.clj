@@ -86,7 +86,7 @@
     "OK"
     ))
 
-(def graph-loyout
+(def graph-layout
   [{:ident "ten-mins" :duration 600 :title "Previous+10+Minutes"}
    {:ident "hour" :duration 3600 :title "Previous+Hour"}
    {:ident "day" :duration 86400 :title "Previous+Day"}
