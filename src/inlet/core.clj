@@ -86,17 +86,18 @@
     "OK"
     ))
 
+(def graph-loyout
+  [{:ident "ten-mins" :duration 600 :title "Previous+10+Minutes"}
+   {:ident "hour" :duration 3600 :title "Previous+Hour"}
+   {:ident "day" :duration 86400 :title "Previous+Day"}
+   {:ident "week" :duration 604800 :title "Previous+Week"}
+   {:ident "month" :duration 2419200 :title "Previous+Month"}
+   {:ident "year" :duration 31449600 :title "Previous+Year"}])
+
 (defn hic [host db]
   (html [:html [:head]
          [:body
-          (for [
-                {:keys [ident duration title]}
-                [{:ident "ten-mins" :duration 600 :title "Previous+10+Minutes"}
-                 {:ident "hour" :duration 3600 :title "Previous+Hour"}
-                 {:ident "day" :duration 86400 :title "Previous+Day"}
-                 {:ident "week" :duration 604800 :title "Previous+Week"}
-                 {:ident "month" :duration 2419200 :title "Previous+Month"}
-                 {:ident "year" :duration 31449600 :title "Previous+Year"}]]
+          (for [{:keys [ident duration title]} graph-layout]
             [:img#ten-minutes
              {
               :id ident
