@@ -94,6 +94,11 @@
    {:ident "month" :duration 2419200 :title "Previous+Month"}
    {:ident "year" :duration 31449600 :title "Previous+Year"}])
 
+(defn refresh-line [id duration db host step title]
+  (str "document.getElementById('" id "').src = '/image?duration=" duration "&db="
+       db "&host=" host "&step=" step "&title=" title
+       "&time=' + new Date();"))
+
 (defn hic [host db]
   (html [:html [:head]
          [:body
@@ -113,6 +118,8 @@
                title)}])
 
           [:script
+
+
            (format  "function update() {
   document.getElementById('hour').src = '/image?duration=3600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+Hour&time=' + new Date();
   document.getElementById('ten-mins').src = '/image?duration=600&height=220&db=%2$s&host=%1$s&step=20&title=Previous+10+Minutes&time=' + new Date();
